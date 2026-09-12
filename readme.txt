@@ -1,30 +1,3 @@
-        PROJECT STARTED ON - 18 JUNE 2026 PRE PLANNED BEFORE THE MINI PROJECT [OWN IDEA]
-                 
-                   ------------------------------------
-                   //SHORT INFO OF THE PROGRESS TILL 02/07/2026//
-these pages are completed 50% till needs update on alignment,padding,animation ,colors 
-                   ------------------------------------
-                   
-_________________________________________________________________________________________
-total pages done = 51 pages (till 1 or two pages needs to be created ) {50 to 55 pages}  |
-html=23                                                                                  |
-css=13                                                                                   | //overall progress//
-js=15                                                                                    |
-(some are external and internal CSS )-to reduce number of pages worked on internal page  |
-_________________________________________________________________________________________|
-
-----------------------------------------------------------------------------------------------------------------------------------------------------------------
-//*  FURTHER MODS/UPDATION *//
-every page needs and updation, the updates or what need to be done are mentioned below:
-dashboard page-link pages to nav bar which are requried, update CSS buttons,margins
-[maps,chatbot,ocr Scanner, mygarage,settings,mymaps(add current location),digitial report(add password for security), =this pages needs full updation]
-the pages which i didnt start=[voice Ai]
-and other pages mods are[mobile responsiveness, theme(colors,shadows,hover),]
-overall[link pages and update css/js]
-[verify all pages are linked to each other , ensure each page has smooth exit and entry phase , 
-check the log+ does it save the details and check button works navigates to right place and gets the correct output]
-----------------------------------------------------------------------------------------------------------------------------------------------------------------
-
 
 
 🏍️ SoulRide AI
