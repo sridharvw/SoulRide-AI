@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SoulRide AI - OCR Scanner</title>
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+    <!-- Tesseract.js for reading text from images -->
+    <script src='https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js'></script>
+    <link rel="stylesheet" href="global.css">
+    <script src="theme.js"></script>
+    <script src="soulride-core.js"></script>
+
+    
+    <style>
+        
+        body { background-color: #11111b; font-family: sans-serif; color: white; margin: 0; }
+        
+        /* App Header */
+        .app-header {
+            display: flex; align-items: center; background: #1e1e2e;
+            padding: 15px 20px; box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+            position: sticky; top: 0; z-index: 100;
+        }
+        .app-header button { font-size: 24px; background: none; border: none; color: #cdd6f4; cursor: pointer; margin-right: 15px; }
+        .app-header h2 { margin: 0; font-size: 20px; color: #fff;}
+        .app-header a { color: white; text-decoration: none; }
+
+        /* Sidebar Navigation */
+        .sidebar {
+            position: fixed; left: -250px; top: 0; width: 250px; height: 100vh;
+            background: #181825; z-index: 200; transition: left 0.3s ease; 
+            box-shadow: 2px 0 15px rgba(0,0,0,0.6);
+        }
+        .sidebar.active { left: 0; }
+        .sidebar-header {
+            padding: 20px; font-size: 20px; font-weight: bold; 
+            border-bottom: 1px solid #313244; color: #cba6f7;
+            display: flex; justify-content: space-between;
+        }
+        .sidebar-close { background: none; border: none; color: #a6adc8; font-size: 20px; cursor: pointer; }
+        .nav-links { list-style: none; padding: 0; margin: 0; }
+        .nav-links li { border-bottom: 1px solid #313244; }
+        .nav-links a { display: block; padding: 15px 20px; color: #cdd6f4; text-decoration: none; font-size: 16px; }
+        .nav-links a:hover { background: #313244; }
+        .nav-links a.active { color: #cba6f7; font-weight: bold; background: #313244; border-left: 4px solid #cba6f7;}
+
+        /* Scanner Layout */
+        .scanner-mobile-frame {
+            max-width: 450px; margin: 0 auto; padding: 20px;
+            display: flex; flex-direction: column; align-items: center;
+        }
+
+        .instruction { color: #a6adc8; margin-bottom: 20px; text-align: center; }
+
+        .viewfinder {
+            width: 100%; height: 350px; background: #000;
+            border-radius: 16px; position: relative; overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            display: flex; justify-content: center; align-items: center;
+            border: 2px solid #313244;
+            background-size: cover; background-position: center;
+        }
+
+        .target-box {
+            width: 80%; height: 60%; border: 2px solid rgba(166, 227, 161, 0.4);
+            position: absolute; border-radius: 12px;
+        }
+        .target-box::before, .target-box::after {
+            content: ''; position: absolute; width: 30px; height: 30px; border-color: #a6e3a1; border-style: solid;
+        }
+        .target-box::before { top: -2px; left: -2px; border-width: 3px 0 0 3px; }
+        .target-box::after { bottom: -2px; right: -2px; border-width: 0 3px 3px 0; }
+
+        .laser {
+            position: absolute; width: 80%; height: 2px; background: #a6e3a1;
+            box-shadow: 0 0 10px #a6e3a1; top: 20%; display: none;
+            animation: scan 2s linear infinite;
+        }
+
+        @keyframes scan {
+            0% { top: 20%; }
+            50% { top: 80%; }
+            100% { top: 20%; }
+        }
+
+        /* Buttons & Inputs */
+        .btn-capture {
+            margin-top: 30px; background: #cba6f7; color: #111; padding: 15px 40px;
+            border-radius: 30px; font-weight: bold; font-size: 18px; border: none;
+            cursor: pointer; display: flex; align-items: center; gap: 10px;
+            box-shadow: 0 4px 15px rgba(203, 166, 247, 0.4); width: 100%; justify-content: center;
+        }
+        .btn-capture:active { transform: scale(0.95); }
+        .hidden-file-input { display: none; }
+        
+        #progress-text { margin-top: 15px; color: #a6e3a1; font-weight: bold; display: none;}
+
+        /* Modal for extracted text */
+        .modal {
+            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.8); justify-content: center; align-items: center; z-index: 300;
+        }
+        .modal-content { background: #1e1e2e; padding: 25px; border-radius: 12px; width: 90%; max-width: 400px; }
+        .modal textarea { width: 100%; height: 150px; background: #11111b; color: #fff; border: 1px solid #45475a; border-radius: 8px; padding: 10px; margin-top: 10px; box-sizing: border-box;}
+        .btn-save { background: #a6e3a1; color: #111; padding: 12px; width: 100%; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; margin-top: 15px;}
+        .btn-discard { background: #f38ba8; color: #111; padding: 12px; width: 100%; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; margin-top: 10px;}
+    </style>
+</head>
+<body>
+
+    <!-- Sidebar Navigation -->
+    <nav class="sidebar" id="sidebar-nav">
+        <div class="sidebar-header">
+            SoulRide AI
+            <button class="sidebar-close" id="close-sidebar-btn">✖</button>
+        </div>
+        <ul class="nav-links">
+            <li><a href="dashboard.html"><i class='bx bx-home'></i> Dashboard</a></li>
+            <li><a href="garage.html"><i class='bx bx-car'></i> My Garage</a></li>
+            <li><a href="chat.html"><i class='bx bx-chat'></i> AI Chat</a></li>
+            <li><a href="maintenance.html"><i class='bx bx-wrench'></i> Maintenance</a></li>
+            <li><a href="fueltracker.html"><i class='bx bx-gas-pump'></i> Fuel Tracker</a></li>
+            <li><a href="documents.html"><i class='bx bx-folder'></i> Digital Locker</a></li>
+            <li><a href="scanner.html" class="active"><i class='bx bx-scan'></i> OCR Scanner</a></li>
+            <li><a href="reports.html"><i class='bx bx-file'></i> Reports</a></li>
+        </ul>
+    </nav>
+
+    <!-- App Header -->
+    <div class="app-header">
+        <button id="mobile-menu-btn">☰</button>
+        <h2>Document Scanner</h2>
+    </div>
+
+    <!-- Mobile Constrained Frame -->
+    <div class="scanner-mobile-frame">
+        <p class="instruction">Position your bill or document in the frame</p>
+        
+        <div class="viewfinder" id="viewfinder">
+            <div class="target-box"></div>
+            <div class="laser" id="laser"></div>
+            <span style="color: #45475a; font-weight: bold;" id="camera-placeholder">Camera Feed</span>
+        </div>
+
+        <p id="progress-text">Scanning: 0%</p>
+
+        <input type="file" id="camera-input" class="hidden-file-input" accept="image/*" capture="environment">
+        
+        <button class="btn-capture" id="capture-btn">
+            <i class='bx bx-camera'></i> Scan Document
+        </button>
+    </div>
+
+    <!-- Results Modal -->
+    <div class="modal" id="result-modal">
+        <div class="modal-content">
+            <h3 style="margin-top: 0; color: #a6e3a1;">Scan Complete!</h3>
+            <p style="color: #a6adc8; font-size: 14px;">Review and edit the extracted text:</p>
+            <textarea id="extracted-text"></textarea>
+            <button class="btn-save" onclick="alert('Saved to documents!')">Save to Locker</button>
+            <button class="btn-discard" id="close-modal-btn">Discard</button>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+          
+            const sidebar = document.getElementById('sidebar-nav');
+            document.getElementById('mobile-menu-btn')?.addEventListener('click', () => sidebar.classList.add('active'));
+            document.getElementById('close-sidebar-btn')?.addEventListener('click', () => sidebar.classList.remove('active'));
+
+      
+            const captureBtn = document.getElementById('capture-btn');
+            const cameraInput = document.getElementById('camera-input');
+            const viewfinder = document.getElementById('viewfinder');
+            const laser = document.getElementById('laser');
+            const placeholder = document.getElementById('camera-placeholder');
+            const progressText = document.getElementById('progress-text');
+            const resultModal = document.getElementById('result-modal');
+            const extractedTextArea = document.getElementById('extracted-text');
+
+            
+            captureBtn.addEventListener('click', () => {
+                cameraInput.click();
+            });
+
+            
+            cameraInput.addEventListener('change', async (event) => {
+                const file = event.target.files[0];
+                if (!file) return;
+
+                // Show image in viewfinder
+                const imageUrl = URL.createObjectURL(file);
+                viewfinder.style.backgroundImage = `url(${imageUrl})`;
+                placeholder.style.display = 'none';
+
+                laser.style.display = 'block';
+                progressText.style.display = 'block';
+                progressText.innerText = "Initializing AI Engine...";
+                captureBtn.disabled = true;
+
+               
+                try {
+                    const result = await Tesseract.recognize(
+                        imageUrl,
+                        'eng', // English language
+                        {
+                            logger: m => {
+                                if(m.status === 'recognizing text') {
+                                    const percent = Math.round(m.progress * 100);
+                                    progressText.innerText = `Extracting Text: ${percent}%`;
+                                }
+                            }
+                        }
+                    );
+
+                    
+                    laser.style.display = 'none';
+                    progressText.innerText = "Done!";
+                    
+                   
+                    extractedTextArea.value = result.data.text;
+                    resultModal.style.display = 'flex';
+
+                } catch (error) {
+                    alert("OCR Failed: " + error.message);
+                    laser.style.display = 'none';
+                } finally {
+                    captureBtn.disabled = false;
+                }
+            });
+
+          
+            document.getElementById('close-modal-btn').addEventListener('click', () => {
+                resultModal.style.display = 'none';
+                viewfinder.style.backgroundImage = 'none';
+                placeholder.style.display = 'block';
+                progressText.style.display = 'none';
+            });
+        });
+    </script>
+</body>
+</html>

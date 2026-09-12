@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>SoulRide AI - Chat Assistant</title>
+    
+    <!-- External Libraries -->
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+    <link rel="stylesheet" href="global.css">
+    <script src="theme.js"></script>
+    <script src="soulride-core.js"></script>
+    
+    <style>
+        /* Chat-specific styling to ensure it acts like a mobile messaging app */
+        body { 
+            background-color: #0f0f12; /* Matches the deep background from your dashboard */
+            margin: 0; 
+            overflow: hidden; /* Prevent body scroll, only chat should scroll */
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: #e0e0e0;
+        }
+        
+        .chat-layout {
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+        }
+
+        .chat-header {
+            display: flex;
+            align-items: center;
+            background: #18181c; /* Matches sidebar color from your dashboard */
+            padding: 15px 20px;
+            border-bottom: 1px solid #333;
+            z-index: 100;
+        }
+
+        .chat-header h2 { margin: 0; font-size: 18px; display: flex; align-items: center; gap: 8px; font-weight: 600; color: #fff; }
+        .chat-header .status-dot { width: 8px; height: 8px; background: #4ade80; border-radius: 50%; box-shadow: 0 0 8px #4ade80; }
+
+        /* The scrolling message area */
+        .chat-window {
+            flex: 1;
+            overflow-y: auto;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            scroll-behavior: smooth;
+            background-color: #0f0f12;
+        }
+
+        .message {
+            max-width: 80%;
+            padding: 12px 16px;
+            border-radius: 12px;
+            font-size: 15px;
+            line-height: 1.4;
+            animation: slideUp 0.3s ease-out forwards;
+        }
+
+        /* AI Message Bubble */
+        .message.ai {
+            background: #1e1e24; /* Slightly lighter than background */
+            border: 1px solid #333;
+            color: #e0e0e0;
+            align-self: flex-start;
+            border-bottom-left-radius: 4px;
+        }
+
+        /* User Message Bubble */
+        .message.user {
+            background: #e53e3e; /* Matches the red "Add Vehicle" button from dashboard */
+            color: white;
+            align-self: flex-end;
+            border-bottom-right-radius: 4px;
+            box-shadow: 0 4px 15px rgba(229, 62, 62, 0.2);
+        }
+
+        /* Input Area at the bottom */
+        .chat-input-area {
+            display: flex;
+            align-items: center;
+            padding: 15px;
+            background: #18181c;
+            border-top: 1px solid #333;
+            gap: 10px;
+            padding-bottom: calc(15px + env(safe-area-inset-bottom));
+        }
+
+        .chat-input-area input {
+            flex: 1;
+            background: #0f0f12 !important;
+            border-radius: 20px !important;
+            padding: 12px 20px !important;
+            border: 1px solid #333 !important;
+            color: #e0e0e0;
+            outline: none;
+        }
+        
+        .chat-input-area input:focus {
+            border-color: #e53e3e !important;
+        }
+
+        .action-btn {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .mic-btn {
+            background: #1e1e24;
+            color: #e0e0e0;
+            border: 1px solid #333;
+        }
+
+        .mic-btn.recording {
+            background: rgba(229, 62, 62, 0.2);
+            color: #e53e3e;
+            border-color: #e53e3e;
+            animation: pulse 1.5s infinite;
+        }
+
+        .send-btn {
+            background: #e53e3e; /* Matches the red "Add Vehicle" button from dashboard */
+            color: white;
+            box-shadow: 0 4px 15px rgba(229, 62, 62, 0.4);
+        }
+
+        /* Animations */
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(229, 62, 62, 0.4); }
+            70% { box-shadow: 0 0 0 10px rgba(229, 62, 62, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(229, 62, 62, 0); }
+        }
+        
+        .chat-layout {
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+        }
+
+        .chat-header {
+            display: flex;
+            align-items: center;
+            background: rgba(21, 21, 35, 0.95);
+            backdrop-filter: var(--blur-effect);
+            padding: 15px 20px;
+            border-bottom: 1px solid var(--border-color);
+            z-index: 100;
+        }
+
+        .chat-header h2 { margin: 0; font-size: 18px; display: flex; align-items: center; gap: 8px; }
+        .chat-header .status-dot { width: 8px; height: 8px; background: var(--mod-fuel); border-radius: 50%; box-shadow: 0 0 8px var(--mod-fuel); }
+
+        /* The scrolling message area */
+        .chat-window {
+            flex: 1;
+            overflow-y: auto;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            scroll-behavior: smooth;
+        }
+
+        .message {
+            max-width: 80%;
+            padding: 12px 16px;
+            border-radius: var(--radius-md);
+            font-size: 15px;
+            line-height: 1.4;
+            animation: slideUp 0.3s ease-out forwards;
+        }
+
+        /* AI Message Bubble */
+        .message.ai {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            color: var(--text-primary);
+            align-self: flex-start;
+            border-bottom-left-radius: 4px;
+        }
+
+        /* User Message Bubble */
+        .message.user {
+            background: var(--accent-red);
+            color: white;
+            align-self: flex-end;
+            border-bottom-right-radius: 4px;
+            box-shadow: 0 4px 15px rgba(239, 68, 68, 0.2);
+        }
+
+        /* Input Area at the bottom */
+        .chat-input-area {
+            display: flex;
+            align-items: center;
+            padding: 15px;
+            background: var(--bg-secondary);
+            border-top: 1px solid var(--border-color);
+            gap: 10px;
+            padding-bottom: calc(15px + env(safe-area-inset-bottom));
+        }
+
+        .chat-input-area input {
+            flex: 1;
+            background: var(--bg-primary) !important;
+            border-radius: 20px !important;
+            padding: 12px 20px !important;
+            border: 1px solid var(--border-color) !important;
+        }
+
+        .action-btn {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .mic-btn {
+            background: var(--card-bg);
+            color: var(--text-primary);
+            border: 1px solid var(--border-color);
+        }
+
+        .mic-btn.recording {
+            background: rgba(239, 68, 68, 0.2);
+            color: var(--accent-red);
+            border-color: var(--accent-red);
+            animation: pulse 1.5s infinite;
+        }
+
+        .send-btn {
+            background: var(--accent-red);
+            color: white;
+            box-shadow: 0 4px 15px rgba(239, 68, 68, 0.4);
+        }
+
+        /* Animations */
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.4); }
+            70% { box-shadow: 0 0 0 10px rgba(239, 68, 68, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
+        }
+
+        .typing-indicator { display: none; align-self: flex-start; background: transparent; padding: 10px; color: var(--text-secondary); font-size: 14px; font-style: italic;}
+    </style>
+</head>
+<body>
+
+    <div class="chat-layout">
+        
+        <!-- Header -->
+        <header class="chat-header">
+            <button onclick="window.history.back()" style="background:none; border:none; color:white; font-size:24px; margin-right:15px; cursor:pointer;"><i class='bx bx-arrow-back'></i></button>
+            <h2><div class="status-dot"></div> SoulRide AI</h2>
+        </header>
+
+        <!-- Chat Messages -->
+        <div class="chat-window" id="chat-window">
+            <div class="message ai">
+                System online. I've synced with your garage. What's on your mind today, Rider?
+            </div>
+            <!-- Typing Indicator -->
+            <div class="typing-indicator" id="typing-indicator">Analyzing telemetry...</div>
+        </div>
+
+        <!-- Input Area -->
+        <div class="chat-input-area">
+            <button class="action-btn mic-btn" id="mic-btn"><i class='bx bx-microphone'></i></button>
+            <input type="text" id="user-input" placeholder="Ask about maintenance, trips..." autocomplete="off">
+            <button class="action-btn send-btn" id="send-btn"><i class='bx bx-send'></i></button>
+        </div>
+
+    </div>
+
+    <!-- ==========================================
+         AI, VOICE, AND LOGIC SCRIPT
+         ========================================== -->
+    <script>
+        // --- 1. CONFIGURATION ---
+        // Static frontends must not contain provider credentials.
+        const GEMINI_API_KEY = "";
+        
+        // --- 2. DYNAMIC CONTEXT INJECTION (PULLS FROM LOCAL STORAGE) ---
+        const getUserVehicleContext = () => {
+            // Attempt to get the vehicles array from localStorage
+            const storedVehiclesStr = localStorage.getItem('soulride_vehicles');
+            let vehicles = [];
+            
+            if (storedVehiclesStr) {
+                try {
+                    vehicles = JSON.parse(storedVehiclesStr);
+                } catch (e) {
+                    console.error("Error parsing vehicles from localStorage", e);
+                }
+            }
+
+            // If the user has added at least one vehicle, build the context string
+            if (vehicles && vehicles.length > 0) {
+                // We use the first vehicle in the array
+                const myBike = vehicles[0];
+                
+                // Build a context string based on the properties saved in your garage.js
+                let contextStr = `The user rides a `;
+                if (myBike.make) contextStr += `${myBike.make} `;
+                if (myBike.model) contextStr += `${myBike.model}. `;
+                if (myBike.nickname) contextStr += `The bike's nickname is "${myBike.nickname}". `;
+                if (myBike.odometer) contextStr += `Current Odometer: ${myBike.odometer} km. `;
+                
+                contextStr += `The user prefers DIY maintenance when possible.`;
+                return contextStr;
+            }
+
+            // Fallback if no vehicles are in the garage yet
+            return `The user has not added any vehicles to their garage yet. Encourage them to add a vehicle in the 'My Garage' section so you can give them specific advice.`;
+        };
+
+        const chatWindow = document.getElementById('chat-window');
+        const userInput = document.getElementById('user-input');
+        const sendBtn = document.getElementById('send-btn');
+        const micBtn = document.getElementById('mic-btn');
+        const typingIndicator = document.getElementById('typing-indicator');
+
+        // --- 3. SPEECH TO TEXT ---
+        const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+        let recognition;
+
+        if (SpeechRecognition) {
+            recognition = new SpeechRecognition();
+            recognition.continuous = false;
+            recognition.lang = 'en-IN';
+            
+            recognition.onstart = () => {
+                micBtn.classList.add('recording');
+                userInput.placeholder = "Listening...";
+            };
+            
+            recognition.onresult = (event) => {
+                userInput.value = event.results[0][0].transcript;
+            };
+            
+            recognition.onend = () => {
+                micBtn.classList.remove('recording');
+                userInput.placeholder = "Ask about maintenance, trips...";
+                if(userInput.value.trim() !== "") handleSend();
+            };
+            
+            micBtn.addEventListener('click', () => recognition.start());
+        } else {
+            micBtn.style.display = 'none';
+        }
+
+        // --- 4. TEXT TO SPEECH ---
+        const synth = window.speechSynthesis;
+        const speakText = (text) => {
+            const cleanText = text.replace(/[*#]/g, '');
+            const utterance = new SpeechSynthesisUtterance(cleanText);
+            
+            const savedVoiceURI = localStorage.getItem('soulride_ai_voice');
+            if (savedVoiceURI) {
+                const voices = synth.getVoices();
+                const selectedVoice = voices.find(voice => voice.voiceURI === savedVoiceURI);
+                if (selectedVoice) utterance.voice = selectedVoice;
+            }
+            synth.speak(utterance);
+        };
+
+        const appendMessage = (text, sender) => {
+            const msgDiv = document.createElement('div');
+            msgDiv.classList.add('message', sender);
+            
+            let formattedText = text;
+            if(sender === 'ai') {
+                formattedText = text.replace(/\*\*(.*?)\*\*/g, '<b>$1</b>');
+            }
+            msgDiv.innerHTML = formattedText;
+            chatWindow.insertBefore(msgDiv, typingIndicator);
+            chatWindow.scrollTop = chatWindow.scrollHeight;
+        };
+
+        // --- 5. GOOGLE GEMINI API INTEGRATION ---
+        const fetchGeminiResponse = async (query) => {
+            if (!GEMINI_API_KEY) {
+                return "AI chat needs a secure backend connection before it can answer questions.";
+            }
+
+            const context = getUserVehicleContext();
+            
+            const systemPrompt = `You are SoulRide AI, an expert, friendly motorcycle mechanic and riding companion. Keep your answers concise, practical, and formatted for a mobile screen. Do not use extremely long paragraphs. Use the following context about the user's vehicle to answer their question intelligently. Context: [${context}]. User Query: ${query}`;
+
+            const requestBody = {
+                contents: [{ parts: [{ text: systemPrompt }] }]
+            };
+
+            try {
+                // UPDATED: gemini-pro and gemini-2.0-flash are both retired/deprecated. Using gemini-2.5-flash instead.
+                const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${GEMINI_API_KEY}`, {
+                    method: 'POST',
+                    headers: { 
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(requestBody)
+                });
+
+                if (!response.ok) {
+                     const errorText = await response.text();
+                     console.error("API Response Error:", response.status, errorText);
+                     
+                     // Adding specific error messages to help you debug if it fails again
+                     if (response.status === 400) return "API Error 400: Your API key format is invalid.";
+                     if (response.status === 403) return "API Error 403: Your API key doesn't have permission, or it is restricted.";
+                     
+                     throw new Error(`API Request Failed with status ${response.status}`);
+                }
+                
+                const data = await response.json();
+                
+                // Safely extract the text from the Gemini response
+                if (data && data.candidates && data.candidates.length > 0 && data.candidates[0].content && data.candidates[0].content.parts) {
+                     return data.candidates[0].content.parts[0].text;
+                } else {
+                     throw new Error("Unexpected API response structure.");
+                }
+                
+            } catch (error) {
+                console.error("Gemini API Error details:", error);
+                // Fallback generic message
+                return "I'm having trouble connecting to my neural network right now. Please check your internet connection or verify your API key!";
+            }
+        };
+
+        // --- 6. MAIN SEND HANDLER ---
+        const handleSend = async () => {
+            const text = userInput.value.trim();
+            if (!text) return;
+
+            appendMessage(text, 'user');
+            userInput.value = '';
+            
+            typingIndicator.style.display = 'block';
+            chatWindow.scrollTop = chatWindow.scrollHeight;
+
+            const aiResponse = await fetchGeminiResponse(text);
+
+            typingIndicator.style.display = 'none';
+            appendMessage(aiResponse, 'ai');
+            speakText(aiResponse);
+        };
+
+        sendBtn.addEventListener('click', handleSend);
+        userInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') handleSend();
+        });
+    </script>
+</body>
+</html>

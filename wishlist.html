@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SoulRide AI | Dream Build Planner</title>
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+    <link rel="stylesheet" href="dashboard.css">
+    <link rel="stylesheet" href="wishlist.css">
+    <link rel="stylesheet" href="global.css">
+    <script src="theme.js"></script>
+    <script src="soulride-core.js"></script>
+</head>
+<body>
+
+    <aside class="sidebar" id="sidebar">
+        <div class="logo"><h2>SoulRide AI</h2></div>
+        <ul class="menu" id="sidebarMenu">
+            <li id="dashboardMenu"><a href="dashboard.html"><i class='bx bx-home'></i><span>Dashboard</span></a></li>
+            <li id="garageMenu"><a href="garage.html"><i class='bx bx-car'></i><span>My Garage</span></a></li>
+            <li id="chatMenu"><a href="chat.html"><i class='bx bx-message-rounded-dots'></i><span>AI Chat</span></a></li>
+            <li id="maintenanceMenu"><a href="maintenance.html"><i class='bx bx-wrench'></i><span>Maintenance</span></a></li>
+            <li id="fuelMenu"><a href="fuel.html"><i class='bx bx-gas-pump'></i><span>Fuel Tracker</span></a></li>
+            <li id="tripMenu"><a href="trip.html"><i class='bx bx-map-alt'></i><span>Trips</span></a></li>
+            <li id="journeyMenu"><a href="achivement.html"><i class='bx bx-compass'></i><span>My Journey</span></a></li>
+            <li class="active" id="wishlistMenu"><a href="wishlist.html"><i class='bx bx-list-heart'></i><span>Wishlist</span></a></li>
+            <li id="profileMenu"><a href="profile.html"><i class='bx bx-user'></i><span>Profile</span></a></li>
+            <li id="logoutMenu"><a href="login.html"><i class='bx bx-log-out'></i><span>Logout</span></a></li>
+        </ul>
+    </aside>
+
+    <main class="main-content">
+        
+        <header class="page-header">
+            <div class="header-titles">
+                <h1>Dream Build Planner</h1>
+                <p>Plan your modifications, track your budget, and build your ultimate ride.</p>
+            </div>
+            <button class="btn primary-btn" id="openAddModalBtn"><i class='bx bx-plus'></i> Add to Wishlist</button>
+        </header>
+
+        <div class="wishlist-dashboard">
+            <div class="stats-column">
+                <div class="stat-pill"><i class='bx bx-cart-alt'></i> <div><span>Wishlist Items</span><strong id="statItems">0</strong></div></div>
+                <div class="stat-pill"><i class='bx bx-rupee'></i> <div><span>Estimated Cost</span><strong id="statEstCost">₹0</strong></div></div>
+                <div class="stat-pill"><i class='bx bx-check-shield'></i> <div><span>Purchased</span><strong id="statPurchased">0</strong></div></div>
+            </div>
+
+            <div class="budget-tracker card-panel">
+                <div class="budget-header">
+                    <h3><i class='bx bx-wallet'></i> Budget Tracker</h3>
+                    <button class="icon-btn" title="Set Budget"><i class='bx bx-edit'></i></button>
+                </div>
+                <div class="budget-amounts">
+                    <div><span>Budget</span><h4 id="totalBudget">₹50,000</h4></div>
+                    <div><span>Spent</span><h4 id="spentBudget" class="text-red">₹18,000</h4></div>
+                    <div><span>Remaining</span><h4 id="remainingBudget" class="text-green">₹32,000</h4></div>
+                </div>
+                <div class="progress-container">
+                    <div class="progress-bar" id="budgetProgressBar" style="width: 36%;"></div>
+                </div>
+            </div>
+
+            <div class="build-progress card-panel">
+                <div class="budget-header">
+                    <h3><i class='bx bx-tachometer'></i> Dream Build Progress</h3>
+                    <select id="buildVehicleSelect" class="mini-select">
+                        <option>Honda CB350</option>
+                        <option>Honda Civic</option>
+                    </select>
+                </div>
+                <div class="build-stats">
+                    <h2 id="buildPercentage">45%</h2>
+                    <p>Completed</p>
+                </div>
+                <div class="progress-container">
+                    <div class="progress-bar build-bar" id="buildProgressBar" style="width: 45%;"></div>
+                </div>
+                <div class="mini-checklist" id="buildChecklist">
+                    </div>
+            </div>
+        </div>
+
+        <section class="controls-bar">
+            <div class="search-box">
+                <i class='bx bx-search'></i>
+                <input type="text" id="searchInput" placeholder="Search wishlist...">
+            </div>
+            <div class="filters">
+                <select id="filterCategory">
+                    <option value="all">All Categories</option>
+                    <option value="Performance">Performance</option>
+                    <option value="Safety Gear">Safety Gear</option>
+                    <option value="Accessories">Accessories</option>
+                    <option value="Lighting">Lighting</option>
+                </select>
+                <select id="filterVehicle">
+                    <option value="all">All Vehicles</option>
+                    </select>
+                <select id="filterPriority">
+                    <option value="all">Priority</option>
+                    <option value="high">🔴 High</option>
+                    <option value="medium">🟡 Medium</option>
+                    <option value="low">🟢 Low</option>
+                </select>
+            </div>
+        </section>
+
+        <section class="wishlist-section">
+            <div class="wishlist-grid" id="wishlistGrid">
+                <div class="wish-card">
+                    <div class="wish-image placeholder-img"><i class='bx bx-image'></i></div>
+                    <div class="wish-content">
+                        <div class="wish-header">
+                            <span class="badge priority-high">High Priority</span>
+                            <span class="badge category-badge">Performance</span>
+                        </div>
+                        <h3 class="wish-title">Akrapovic Exhaust</h3>
+                        <div class="wish-price">₹15,000</div>
+                        <p class="wish-meta"><i class='bx bx-car'></i> Honda CB350</p>
+                        
+                        <div class="status-tracker">
+                            <div class="step active">Dream</div>
+                            <div class="step">Ordered</div>
+                            <div class="step">Installed</div>
+                        </div>
+
+                        <div class="wish-actions">
+                            <button class="btn secondary-btn edit-btn"><i class='bx bx-edit'></i></button>
+                            <button class="btn secondary-btn delete-btn"><i class='bx bx-trash'></i></button>
+                            <button class="btn success-btn purchase-trigger-btn"><i class='bx bx-check-double'></i> Mark Purchased</button>
+                        </div>
+                    </div>
+                </div>
+                </div>
+        </section>
+    </main>
+
+    <div class="modal-overlay" id="wishlistModal">
+        <div class="modal-content large-modal">
+            <div class="modal-header">
+                <h3>Add to Dream Build</h3>
+                <i class='bx bx-x close-modal' id="closeAddModal"></i>
+            </div>
+            <form id="wishlistForm">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Product Name</label>
+                        <input type="text" id="itemName" placeholder="e.g. Akrapovic Exhaust" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Expected Price (₹)</label>
+                        <input type="number" id="itemPrice" placeholder="e.g. 15000" required>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Category</label>
+                        <select id="itemCategory" required>
+                            <option value="Performance">Performance</option>
+                            <option value="Safety Gear">Safety Gear</option>
+                            <option value="Accessories">Accessories</option>
+                            <option value="Lighting">Lighting</option>
+                            <option value="Comfort">Comfort</option>
+                            <option value="Electronics">Electronics</option>
+                            <option value="Cleaning">Cleaning</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>For Vehicle</label>
+                        <select id="itemVehicle" required>
+                            </select>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Priority</label>
+                        <select id="itemPriority" required>
+                            <option value="high">🔴 High - Must Have</option>
+                            <option value="medium">🟡 Medium - Nice to Have</option>
+                            <option value="low">🟢 Low - Dream Item</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Purchase Link (URL)</label>
+                        <input type="url" id="itemLink" placeholder="https://amazon.in/...">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Notes / Why do I want this?</label>
+                    <textarea id="itemNotes" placeholder="Will increase HP and sounds amazing..."></textarea>
+                </div>
+                <button type="submit" class="btn primary-btn full-width">Save to Wishlist</button>
+            </form>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="purchaseModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>🎉 Congratulations!</h3>
+                <i class='bx bx-x close-modal' id="closePurchaseModal"></i>
+            </div>
+            <p style="color: var(--text-secondary); margin-bottom: 20px;">You are about to move this item to your Journey & Inventory. Let's finalize the details.</p>
+            
+            <form id="purchaseForm">
+                <div class="form-group">
+                    <label>Where should this go?</label>
+                    <div class="radio-group">
+                        <label class="radio-card">
+                            <input type="radio" name="destCategory" value="accessory" checked>
+                            <i class='bx bx-shopping-bag'></i> Riding Accessory
+                        </label>
+                        <label class="radio-card">
+                            <input type="radio" name="destCategory" value="mod">
+                            <i class='bx bx-wrench'></i> Vehicle Mod
+                        </label>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Expected Price</label>
+                        <input type="text" id="expectedPriceDisplay" disabled style="background: var(--bg-dark);">
+                    </div>
+                    <div class="form-group">
+                        <label>Actual Price Paid (₹)</label>
+                        <input type="number" id="actualPrice" required>
+                    </div>
+                </div>
+                
+                <div class="form-group upload-box">
+                    <i class='bx bx-receipt'></i>
+                    <span>Upload Bill/Receipt (Optional)</span>
+                    <input type="file" style="display:none;">
+                </div>
+
+                <button type="submit" class="btn success-btn full-width"><i class='bx bx-check-shield'></i> Complete Build Step</button>
+            </form>
+        </div>
+    </div>
+
+    <script src="wishlist.js"></script>
+
+</body>
+</html>

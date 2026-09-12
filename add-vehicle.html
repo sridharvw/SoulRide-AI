@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<!-- Updated: 2026-09-09 -->
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Vehicle | SoulRide AI</title>
+
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+    <script src="theme.js"></script>
+    <script src="soulride-core.js"></script>
+
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+
+        :root {
+            --bg-dark: #121212;
+            --bg-panel: #1e1e24;
+            --accent-red: #e63946;
+            --accent-hover: #ff4d5a;
+            --text-primary: #f8f9fa;
+            --text-secondary: #adb5bd;
+            --border-color: #333333;
+            --font-family: 'Poppins', sans-serif;
+            --border-radius: 12px;
+            --transition: all 0.3s ease;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: var(--font-family);
+        }
+
+        body {
+            background: linear-gradient(135deg, #121212 0%, #1a1a2e 100%);
+            color: var(--text-primary);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 40px 20px;
+        }
+
+        .container {
+            background-color: var(--bg-panel);
+            width: 100%;
+            max-width: 800px;
+            padding: 40px;
+            border-radius: var(--border-radius);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            border: 1px solid var(--border-color);
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 20px;
+        }
+
+        .header h1 {
+            font-size: 28px;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 5px;
+        }
+
+        .header p {
+            color: var(--text-secondary);
+            font-size: 15px;
+        }
+
+        #vehicleForm {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .form-group:has(#nicknameInput),
+        .form-group:has(#vehicleImage),
+        #formMsg,
+        #saveVehicleBtn,
+        #backBtn {
+            grid-column: 1 / -1;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        label {
+            margin-bottom: 8px;
+            font-size: 14px;
+            color: var(--text-secondary);
+            font-weight: 500;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 14px 15px;
+            background-color: var(--bg-dark);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            color: var(--text-primary);
+            font-size: 15px;
+            outline: none;
+            transition: var(--transition);
+        }
+
+        input::placeholder {
+            color: #555;
+        }
+
+        input:focus, select:focus {
+            border-color: var(--accent-red);
+            box-shadow: 0 0 0 2px rgba(230, 57, 70, 0.2);
+        }
+
+        input[type="file"] {
+            padding: 10px;
+            background-color: var(--bg-dark);
+            color: var(--text-secondary);
+            cursor: pointer;
+        }
+
+        /* Image preview shown once a file is picked */
+        .image-preview {
+            margin-top: 12px;
+            display: none;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .image-preview.active {
+            display: flex;
+        }
+
+        .image-preview img {
+            width: 72px;
+            height: 72px;
+            object-fit: cover;
+            border-radius: 10px;
+            border: 1px solid var(--border-color);
+        }
+
+        .image-preview span {
+            font-size: 13px;
+            color: var(--text-secondary);
+        }
+
+        #saveVehicleBtn {
+            background-color: var(--accent-red);
+            color: white;
+            border: none;
+            padding: 16px;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            margin-top: 10px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        #saveVehicleBtn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        #saveVehicleBtn:hover:not(:disabled) {
+            background-color: var(--accent-hover);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(220, 38, 38, 0.4);
+        }
+
+        #backBtn {
+            background: transparent;
+            border: none;
+            color: var(--text-secondary);
+            cursor: pointer;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            font-size: 14px;
+        }
+
+        #backBtn:hover {
+            color: var(--text-primary);
+        }
+
+        #formMsg {
+            display: none;
+            font-size: 13px;
+            padding: 10px 14px;
+            border-radius: 8px;
+            background: rgba(230, 57, 70, 0.1);
+            border: 1px solid var(--accent-red);
+            color: var(--accent-red);
+        }
+
+        #formMsg.active {
+            display: block;
+        }
+
+        @media screen and (max-width: 600px) {
+            #vehicleForm {
+                grid-template-columns: 1fr;
+            }
+
+            .container {
+                padding: 25px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container" id="vehicleContainer">
+
+        <div class="header" id="vehicleHeader">
+            <h1>Add Your Vehicle</h1>
+            <p>Your companion starts here.</p>
+        </div>
+
+        <form id="vehicleForm">
+
+            <p id="formMsg"></p>
+
+            <div class="form-group">
+                <label for="vehicleType">Vehicle Type</label>
+                <select id="vehicleType">
+                    <option value="">Select</option>
+                    <option>Bike</option>
+                    <option>Car</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="brandInput">Brand</label>
+                <input type="text" id="brandInput" placeholder="Honda, Yamaha, Hyundai..." required>
+            </div>
+
+            <div class="form-group">
+                <label for="modelInput">Model</label>
+                <input type="text" id="modelInput" placeholder="CB350, R15, Creta..." required>
+            </div>
+
+            <div class="form-group">
+                <label for="nicknameInput">Nickname</label>
+                <input type="text" id="nicknameInput" placeholder="Shadow, Thunder...">
+            </div>
+
+            <div class="form-group">
+                <label for="yearInput">Year</label>
+                <input type="number" id="yearInput" placeholder="2025">
+            </div>
+
+            <div class="form-group">
+                <label for="colorInput">Color</label>
+                <input type="text" id="colorInput" placeholder="Black">
+            </div>
+
+            <div class="form-group">
+                <label for="regInput">Registration Number</label>
+                <input type="text" id="regInput" placeholder="KA 01 AB 1234">
+            </div>
+
+            <div class="form-group">
+                <label for="fuelType">Fuel Type</label>
+                <select id="fuelType">
+                    <option value="">Select</option>
+                    <option>Petrol</option>
+                    <option>Diesel</option>
+                    <option>Electric</option>
+                    <option>Hybrid</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="odometerInput">Current Odometer</label>
+                <input type="number" id="odometerInput" placeholder="10000">
+            </div>
+
+            <div class="form-group">
+                <label for="vehicleImage">Vehicle Image</label>
+                <input type="file" id="vehicleImage" accept="image/*">
+                <div class="image-preview" id="imagePreview">
+                    <img id="previewImg" src="" alt="Preview">
+                    <span id="previewFileName"></span>
+                </div>
+            </div>
+
+            <button type="submit" id="saveVehicleBtn">
+                Save Vehicle
+            </button>
+            <button type="button" id="backBtn">
+                <i class='bx bx-arrow-back'></i>
+                Back to Dashboard
+            </button>
+
+        </form>
+
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+
+            const form = document.getElementById('vehicleForm');
+            const imageInput = document.getElementById('vehicleImage');
+            const preview = document.getElementById('imagePreview');
+            const previewImg = document.getElementById('previewImg');
+            const previewFileName = document.getElementById('previewFileName');
+            const saveBtn = document.getElementById('saveVehicleBtn');
+            const formMsg = document.getElementById('formMsg');
+            const backBtn = document.getElementById('backBtn');
+
+            backBtn.addEventListener('click', () => {
+                window.location.href = 'dashboard.html';
+            });
+
+            // Max size guard so we don't blow past localStorage's ~5MB quota
+            const MAX_IMAGE_BYTES = 1.5 * 1024 * 1024; // 1.5MB
+
+            function showMessage(text) {
+                formMsg.textContent = text;
+                formMsg.classList.add('active');
+            }
+
+            function clearMessage() {
+                formMsg.textContent = '';
+                formMsg.classList.remove('active');
+            }
+
+            // Show a live preview once an image is chosen
+            imageInput.addEventListener('change', () => {
+                clearMessage();
+                const file = imageInput.files[0];
+                if (!file) {
+                    preview.classList.remove('active');
+                    return;
+                }
+
+                if (!file.type.startsWith('image/')) {
+                    showMessage('Please choose an image file.');
+                    imageInput.value = '';
+                    preview.classList.remove('active');
+                    return;
+                }
+
+                if (file.size > MAX_IMAGE_BYTES) {
+                    showMessage('That image is too large — please choose one under 1.5MB.');
+                    imageInput.value = '';
+                    preview.classList.remove('active');
+                    return;
+                }
+
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    previewImg.src = e.target.result;
+                    previewFileName.textContent = file.name;
+                    preview.classList.add('active');
+                };
+                reader.readAsDataURL(file);
+            });
+
+            // Reads the chosen file and resolves to a base64 data URL (or null if none)
+            function readImageAsDataURL(file) {
+                return new Promise((resolve, reject) => {
+                    if (!file) {
+                        resolve(null);
+                        return;
+                    }
+                    const reader = new FileReader();
+                    reader.onload = () => resolve(reader.result);
+                    reader.onerror = () => reject(new Error('Could not read the selected image.'));
+                    reader.readAsDataURL(file);
+                });
+            }
+
+            form.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                clearMessage();
+
+                const brand = document.getElementById('brandInput').value.trim();
+                const model = document.getElementById('modelInput').value.trim();
+
+                if (!brand || !model) {
+                    showMessage('Brand and Model are required.');
+                    return;
+                }
+
+                saveBtn.disabled = true;
+                saveBtn.textContent = 'Saving...';
+
+                try {
+                    const imageFile = imageInput.files[0] || null;
+                    const imageDataUrl = await readImageAsDataURL(imageFile);
+
+                    const vehicle = {
+                        id: Date.now(),
+                        type: document.getElementById('vehicleType').value || null,
+                        brand,
+                        model,
+                        nickname: document.getElementById('nicknameInput').value.trim() || null,
+                        year: document.getElementById('yearInput').value || null,
+                        color: document.getElementById('colorInput').value.trim() || null,
+                        registration: document.getElementById('regInput').value.trim() || null,
+                        fuelType: document.getElementById('fuelType').value || null,
+                        odometer: document.getElementById('odometerInput').value || 0,
+                        image: imageDataUrl,
+                        nextServiceDate: null,
+                        addedDate: new Date().toISOString()
+                    };
+
+                    let vehicles = [];
+                    try {
+                        vehicles = JSON.parse(localStorage.getItem('vehicles')) || [];
+                    } catch {
+                        vehicles = [];
+                    }
+                    vehicles.push(vehicle);
+
+                    saveVehicles(vehicles);
+                    equipVehicle(vehicle.id);
+
+                    window.location.href = 'dashboard.html';
+                } catch (err) {
+                    console.error(err);
+                    showMessage('Something went wrong saving your vehicle. Please try again.');
+                    saveBtn.disabled = false;
+                    saveBtn.textContent = 'Save Vehicle';
+                }
+            });
+
+        });
+    </script>
+
+</body>
+</html>

@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>SoulRide AI - Nearby Services</title>
+    
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+    <link rel="stylesheet" href="global.css">
+    <script src="theme.js"></script>
+
+    
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
+    
+    <style>
+        body { background-color: #0f0f12; font-family: 'Inter', sans-serif; color: white; margin: 0; }
+        
+        /* App Header */
+        .app-header {
+            display: flex; align-items: center; background: rgba(21, 21, 35, 0.95); backdrop-filter: blur(16px);
+            padding: 15px 20px; box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+            position: sticky; top: 0; z-index: 1000; border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+        }
+        .app-header button { font-size: 26px; background: none; border: none; color: #ffffff; cursor: pointer; margin-right: 15px; }
+        .app-header h2 { margin: 0; font-size: 20px; font-weight: 600; }
+        .app-header a { color: white; text-decoration: none; }
+
+        /* Sidebar Navigation */
+        .sidebar {
+            position: fixed; left: -280px; top: 0; width: 280px; height: 100vh;
+            background: rgba(21, 21, 35, 0.95); backdrop-filter: blur(16px); z-index: 2000; transition: left 0.4s cubic-bezier(0.16, 1, 0.3, 1); 
+            box-shadow: 10px 0 30px rgba(0,0,0,0.5); border-right: 1px solid rgba(255, 255, 255, 0.08); display: flex; flex-direction: column;
+        }
+        .sidebar.active { left: 0; }
+        .sidebar-header {
+            padding: 25px 20px; font-size: 22px; font-weight: 700; 
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08); color: #ffffff;
+            display: flex; justify-content: space-between; align-items: center;
+        }
+        .sidebar-close { background: none; border: none; color: #a1a1aa; font-size: 24px; cursor: pointer; transition: color 0.3s; }
+        .sidebar-close:hover { color: #EF4444; }
+        
+        .nav-links { list-style: none; padding: 10px 0; margin: 0; flex: 1; overflow-y: auto; }
+        .nav-links li { margin: 4px 12px; }
+        .nav-links a { 
+            display: flex; align-items: center; gap: 12px; padding: 12px 15px; color: #a1a1aa; 
+            text-decoration: none; font-size: 15px; font-weight: 500; border-radius: 12px; transition: all 0.3s ease; 
+        }
+        .nav-links a i { font-size: 20px; transition: transform 0.3s; }
+        .nav-links a:hover { background: rgba(255, 255, 255, 0.04); color: #ffffff; }
+        .nav-links a.active { color: #EF4444; font-weight: 600; background: rgba(239, 68, 68, 0.1); box-shadow: inset 3px 0 0 #EF4444; }
+        .nav-links a.active i { color: #EF4444; }
+
+        .page-wrapper { max-width: 1000px; margin: 0 auto; padding: 20px; display: flex; flex-direction: column; height: calc(100vh - 65px); }
+
+        
+        .filter-container {
+            display: flex; gap: 10px; margin-bottom: 15px; overflow-x: auto; padding-bottom: 5px;
+            scrollbar-width: none; 
+        }
+        .filter-container::-webkit-scrollbar { display: none;  }
+        
+        .filter-btn {
+            background: rgba(255, 255, 255, 0.04); color: #a1a1aa; border: 1px solid rgba(255, 255, 255, 0.08);
+            padding: 10px 18px; border-radius: 20px; font-size: 14px; font-weight: 500; cursor: pointer;
+            white-space: nowrap; display: flex; align-items: center; gap: 6px; transition: all 0.3s ease;
+        }
+        .filter-btn i { font-size: 18px; }
+        .filter-btn:hover { background: rgba(255, 255, 255, 0.1); color: #ffffff; }
+        .filter-btn.active { background: #EF4444; color: #ffffff; border-color: #EF4444; box-shadow: 0 4px 15px rgba(239, 68, 68, 0.4); }
+
+        /* Map Container */
+        .map-card {
+            flex: 1; background: rgba(255, 255, 255, 0.04); border-radius: 18px; border: 1px solid rgba(255, 255, 255, 0.08);
+            overflow: hidden; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2); position: relative; display: flex; flex-direction: column;
+        }
+        
+        #map { width: 100%; flex: 1; background: #0B0B14; z-index: 1; }
+
+        
+        .custom-div-icon { background: transparent; border: none; }
+        .marker-pin {
+            width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center;
+            color: white; font-size: 20px; box-shadow: 0 4px 10px rgba(0,0,0,0.5); border: 2px solid #ffffff;
+        }
+        .marker-petrol { background: #F59E0B; } 
+        .marker-service { background: #06B6D4; } 
+        .marker-ev { background: #22C55E; } 
+        .marker-user { background: #EF4444; border-radius: 50%; box-shadow: 0 0 15px rgba(239, 68, 68, 0.8); animation: pulse 2s infinite; }
+        
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7); }
+            70% { box-shadow: 0 0 0 15px rgba(239, 68, 68, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
+        }
+
+        .leaflet-popup-content-wrapper, .leaflet-popup-tip {
+            background: rgba(21, 21, 35, 0.95) !important; color: #ffffff !important; backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 12px;
+        }
+        .leaflet-popup-content { margin: 15px; font-family: 'Inter', sans-serif; }
+        .leaflet-popup-content h3 { margin: 0 0 5px 0; font-size: 16px; font-weight: 600; color: #ffffff; }
+        .leaflet-popup-content p { margin: 0; font-size: 13px; color: #a1a1aa; }
+        .leaflet-popup-close-button { color: #a1a1aa !important; }
+        
+        .locate-btn {
+            position: absolute; bottom: 20px; right: 20px; z-index: 400; width: 50px; height: 50px;
+            background: #1e1e2e; color: #ffffff; border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 50%;
+            display: flex; align-items: center; justify-content: center; font-size: 24px; cursor: pointer;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.4); transition: all 0.3s ease;
+        }
+        .locate-btn:hover { background: #EF4444; color: #ffffff; border-color: #EF4444; transform: scale(1.05); }
+
+    </style>
+</head>
+<body>
+
+    <!-- Sidebar Navigation -->
+    <nav class="sidebar" id="sidebar-nav">
+        <div class="sidebar-header">
+            SoulRide AI
+            <button class="sidebar-close" id="close-sidebar-btn"><i class='bx bx-x'></i></button>
+        </div>
+        <ul class="nav-links">
+            <li><a href="dashboard.html"><i class='bx bx-grid-alt'></i> Dashboard</a></li>
+            <li><a href="garage.html"><i class='bx bx-car'></i> My Garage</a></li>
+            <li><a href="chat.html"><i class='bx bx-message-square-dots'></i> AI Assistant</a></li>
+            <li><a href="maps.html" class="active"><i class='bx bx-map-alt'></i> Maps & Services</a></li>
+            <li><a href="maintenance.html"><i class='bx bx-wrench'></i> Maintenance</a></li>
+            <li><a href="fuel.html"><i class='bx bx-gas-pump'></i> Fuel Tracker</a></li>
+            <li><a href="documents.html"><i class='bx bx-folder'></i> Digital Locker</a></li>
+            <li><a href="sos.html"><i class='bx bx-shield-plus'></i> Emergency SOS</a></li>
+            <li><a href="setting.html"><i class='bx bx-cog'></i> Settings</a></li>
+        </ul>
+    </nav>
+
+    <header class="app-header">
+        <button id="mobile-menu-btn"><i class='bx bx-menu'></i></button>
+        <h2>Nearby Services</h2>
+    </header>
+
+    <main class="page-wrapper">
+        
+        <div class="filter-container">
+            <button class="filter-btn active" data-filter="all"><i class='bx bx-map'></i> All</button>
+            <button class="filter-btn" data-filter="petrol"><i class='bx bx-gas-pump'></i> Petrol Pumps</button>
+            <button class="filter-btn" data-filter="service"><i class='bx bx-wrench'></i> Mechanics</button>
+            <button class="filter-btn" data-filter="ev"><i class='bx bx-plug'></i> EV Charging</button>
+        </div>
+
+        <div class="map-card">
+            <div id="map"></div>
+            <button class="locate-btn" id="locate-btn" title="Find My Location"><i class='bx bx-target-lock'></i></button>
+        </div>
+
+    </main>
+
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Sidebar Logic
+            const sidebar = document.getElementById('sidebar-nav');
+            document.getElementById('mobile-menu-btn')?.addEventListener('click', () => sidebar.classList.add('active'));
+            document.getElementById('close-sidebar-btn')?.addEventListener('click', () => sidebar.classList.remove('active'));
+
+            const defaultLat = 12.9716;
+            const defaultLng = 77.5946;
+            const map = L.map('map', { zoomControl: false }).setView([defaultLat, defaultLng], 13);
+
+            L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+                attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
+                subdomains: 'abcd',
+                maxZoom: 20
+            }).addTo(map);
+
+            L.control.zoom({ position: 'topright' }).addTo(map);
+
+            const createCustomIcon = (iconClass, bgClass) => {
+                return L.divIcon({
+                    className: 'custom-div-icon',
+                    html: `<div class="marker-pin ${bgClass}"><i class='bx ${iconClass}'></i></div>`,
+                    iconSize: [36, 36],
+                    iconAnchor: [18, 18],
+                    popupAnchor: [0, -20]
+                });
+            };
+
+            const icons = {
+                petrol: createCustomIcon('bx-gas-pump', 'marker-petrol'),
+                service: createCustomIcon('bx-wrench', 'marker-service'),
+                ev: createCustomIcon('bx-plug', 'marker-ev'),
+                user: L.divIcon({ className: 'custom-div-icon marker-user', iconSize: [20, 20] })
+            };
+
+            const generateMockPOIs = (lat, lng) => {
+                return [
+                    { type: 'petrol', lat: lat + 0.015, lng: lng - 0.01, name: 'Shell Petrol Pump', desc: 'Premium Fuel available. Open 24/7.' },
+                    { type: 'petrol', lat: lat - 0.012, lng: lng + 0.015, name: 'IndianOil', desc: 'Regular fuel & Air checking.' },
+                    { type: 'service', lat: lat + 0.008, lng: lng + 0.005, name: 'SoulRide Authorized Center', desc: 'Expert mechanics, OEM parts.' },
+                    { type: 'service', lat: lat - 0.005, lng: lng - 0.015, name: 'QuickFix Garage', desc: 'Local mechanic for quick patches.' },
+                    { type: 'ev', lat: lat + 0.02, lng: lng + 0.01, name: 'Ather Grid Charging', desc: 'Fast charging available.' },
+                    { type: 'ev', lat: lat - 0.015, lng: lng - 0.005, name: 'Zeon Charging Station', desc: 'CCS2 / CHAdeMO supported.' }
+                ];
+            };
+
+            let markers = [];
+            let currentFilter = 'all';
+
+            const renderMarkers = (pois) => {
+                // Clear existing markers
+                markers.forEach(marker => map.removeLayer(marker));
+                markers = [];
+
+                pois.forEach(poi => {
+                    if (currentFilter === 'all' || currentFilter === poi.type) {
+                        const marker = L.marker([poi.lat, poi.lng], { icon: icons[poi.type] })
+                            .bindPopup(`<h3>${poi.name}</h3><p>${poi.desc}</p>`);
+                        marker.addTo(map);
+                        markers.push(marker);
+                    }
+                });
+            };
+
+            // Initial POIs
+            let activePOIs = generateMockPOIs(defaultLat, defaultLng);
+            renderMarkers(activePOIs);
+
+            // Filter Button Logic
+            const filterBtns = document.querySelectorAll('.filter-btn');
+            filterBtns.forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    filterBtns.forEach(b => b.classList.remove('active'));
+                    e.target.closest('.filter-btn').classList.add('active');
+                    currentFilter = e.target.closest('.filter-btn').getAttribute('data-filter');
+                    renderMarkers(activePOIs);
+                });
+            });
+
+            // Geolocation Logic
+            let userMarker = null;
+
+            const locateUser = () => {
+                const locateBtn = document.getElementById('locate-btn');
+                locateBtn.innerHTML = "<i class='bx bx-loader-alt bx-spin'></i>"; 
+
+                if (!navigator.geolocation) {
+                    alert("Geolocation is not supported by your browser.");
+                    locateBtn.innerHTML = "<i class='bx bx-target-lock'></i>";
+                    return;
+                }
+
+                navigator.geolocation.getCurrentPosition((position) => {
+                    const userLat = position.coords.latitude;
+                    const userLng = position.coords.longitude;
+
+                    
+                    map.setView([userLat, userLng], 14);
+
+                   
+                    if (userMarker) {
+                        map.removeLayer(userMarker);
+                    }
+                    userMarker = L.marker([userLat, userLng], { icon: icons.user }).addTo(map)
+                        .bindPopup("<h3>Your Location</h3>").openPopup();
+
+                    
+                    activePOIs = generateMockPOIs(userLat, userLng);
+                    renderMarkers(activePOIs);
+
+                    locateBtn.innerHTML = "<i class='bx bx-target-lock'></i>";
+                }, () => {
+                    alert("Unable to retrieve your location. Showing default area.");
+                    locateBtn.innerHTML = "<i class='bx bx-target-lock'></i>";
+                });
+            };
+
+            document.getElementById('locate-btn').addEventListener('click', locateUser);
+            
+            
+        });
+    </script>
+</body>
+</html>

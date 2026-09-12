@@ -1,0 +1,230 @@
+body {
+    padding-top: env(safe-area-inset-top);
+}
+
+@media screen and (max-width: 768px) {
+    .sidebar {
+        position: fixed;
+        left: -100%;
+        top: 0;
+        height: 100vh;
+        z-index: 1000;
+        transition: left 0.3s ease;
+    }
+
+    .sidebar.active,
+    .sidebar.open {
+        left: 0;
+        transform: translateX(0);
+    }
+
+    .main-content {
+        margin-left: 0 !important;
+        width: 100% !important;
+        padding: 15px;
+    }
+}
+
+/* GLOBAL TOP NAVIGATION BAR */
+.app-header {
+    display: flex;
+    align-items: center;
+    background: #1e1e2e;
+    padding: 15px 20px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+.app-header button {
+    font-size: 24px;
+    background: none;
+    border: none;
+    color: #cdd6f4;
+    cursor: pointer;
+    margin-right: 15px;
+}
+.app-header h2 {
+    margin: 0;
+    font-size: 20px;
+}
+.app-header a {
+    color: #ffffff;
+    text-decoration: none;
+}
+
+/* ---- App Preferences (added) ----
+   Moved here from settings.css so theme color, font size, and dark
+   mode actually apply on every page, since global.css is loaded
+   everywhere and settings.css is not. */
+
+/* Theme colors */
+body.theme-blue { --accent-red: #3498db; }
+body.theme-green { --accent-red: #2ecc71; }
+body.theme-purple { --accent-red: #9b59b6; }
+body.theme-orange { --accent-red: #e67e22; }
+
+/* Font sizes */
+body.font-small { font-size: 14px; }
+body.font-large { font-size: 18px; }
+
+body.font-small h1 { font-size: 24px; }
+body.font-large h1 { font-size: 32px; }
+
+body.font-small .setting-row label, body.font-small .nav-btn { font-size: 13px; }
+body.font-large .setting-row label, body.font-large .nav-btn { font-size: 17px; }
+
+/* Dark / Light mode
+   NOTE: placeholder colors below — swap these for your actual light-theme
+   values if these variable names don't match what's defined in your
+   :root block elsewhere in this file. */
+body.light-mode {
+    --bg-dark: #f4f4f6;
+    --bg-panel: #ffffff;
+    --text-primary: #1a1a1a;
+    --text-secondary: #5f5f5f;
+    --border-color: #e0e0e0;
+    --text-muted: #6b7280;
+    --bg-panel-2: #f8f9fb;
+    color-scheme: light;
+}
+
+/* Shared light-theme bridge for pages that still have legacy hard-coded dark surfaces. */
+html.light-mode body,
+body.light-mode {
+    background: #f4f6f8 !important;
+    color: var(--text-primary) !important;
+}
+
+html.light-mode .sidebar,
+body.light-mode .sidebar,
+html.light-mode .app-header,
+body.light-mode .app-header,
+html.light-mode .topbar,
+body.light-mode .topbar,
+html.light-mode .chat-header,
+body.light-mode .chat-header {
+    background: #ffffff !important;
+    color: var(--text-primary) !important;
+    border-color: var(--border-color) !important;
+    box-shadow: 0 2px 12px rgba(15, 23, 42, 0.08) !important;
+}
+
+html.light-mode .sidebar a,
+body.light-mode .sidebar a,
+html.light-mode .nav-links a,
+body.light-mode .nav-links a,
+html.light-mode .app-header h2,
+body.light-mode .app-header h2,
+html.light-mode .app-header a,
+body.light-mode .app-header a {
+    color: var(--text-primary) !important;
+}
+
+html.light-mode .settings-content,
+body.light-mode .settings-content,
+html.light-mode .settings-sidebar,
+body.light-mode .settings-sidebar,
+html.light-mode .stat-card,
+body.light-mode .stat-card,
+html.light-mode .vehicle-card,
+body.light-mode .vehicle-card,
+html.light-mode .action-card,
+body.light-mode .action-card,
+html.light-mode .tool-tile,
+body.light-mode .tool-tile,
+html.light-mode .activity-box,
+body.light-mode .activity-box,
+html.light-mode .assistant,
+body.light-mode .assistant,
+html.light-mode .chart-container,
+body.light-mode .chart-container,
+html.light-mode .metric-card,
+body.light-mode .metric-card,
+html.light-mode .config-card,
+body.light-mode .config-card,
+html.light-mode .preview-section,
+body.light-mode .preview-section,
+html.light-mode .modal-content,
+body.light-mode .modal-content,
+html.light-mode .doc-card,
+body.light-mode .doc-card,
+html.light-mode .fuel-card,
+body.light-mode .fuel-card {
+    background: #ffffff !important;
+    color: var(--text-primary) !important;
+    border-color: var(--border-color) !important;
+    box-shadow: 0 8px 24px rgba(15, 23, 42, 0.06) !important;
+}
+
+html.light-mode input,
+body.light-mode input,
+html.light-mode select,
+body.light-mode select,
+html.light-mode textarea,
+body.light-mode textarea,
+html.light-mode .search-box,
+body.light-mode .search-box,
+html.light-mode .insight-content,
+body.light-mode .insight-content,
+html.light-mode .graph-placeholder,
+body.light-mode .graph-placeholder {
+    background: #f8fafc !important;
+    color: var(--text-primary) !important;
+    border-color: var(--border-color) !important;
+}
+
+html.light-mode p,
+body.light-mode p,
+html.light-mode label,
+body.light-mode label,
+html.light-mode .text-secondary,
+body.light-mode .text-secondary,
+html.light-mode .prev-date,
+body.light-mode .prev-date {
+    color: var(--text-secondary) !important;
+}
+
+html.light-mode h1,
+body.light-mode h1,
+html.light-mode h2,
+body.light-mode h2,
+html.light-mode h3,
+body.light-mode h3,
+html.light-mode h4,
+body.light-mode h4,
+html.light-mode .prev-title,
+body.light-mode .prev-title {
+    color: var(--text-primary) !important;
+}
+
+html.light-mode table,
+body.light-mode table,
+html.light-mode th,
+body.light-mode th,
+html.light-mode td,
+body.light-mode td {
+    color: var(--text-primary) !important;
+    border-color: var(--border-color) !important;
+}
+
+.equipped-vehicle-indicator {
+    position: fixed;
+    right: 18px;
+    bottom: 18px;
+    z-index: 1800;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    max-width: min(360px, calc(100vw - 36px));
+    padding: 9px 13px;
+    border: 1px solid var(--border-color);
+    border-radius: 999px;
+    background: var(--bg-panel);
+    color: var(--text-secondary);
+    box-shadow: var(--shadow);
+    font-size: 12px;
+}
+
+.equipped-vehicle-indicator i { color: var(--accent-red); font-size: 17px; }
+.equipped-vehicle-indicator strong { color: var(--text-primary); font-weight: 600; }

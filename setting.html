@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<!-- Updated: 2026-09-09 -->
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SoulRide AI | Settings</title>
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+    <link rel="stylesheet" href="dashboard.css">
+    <link rel="stylesheet" href="settings.css">
+    <link rel="stylesheet" href="global.css">
+    <script src="theme.js"></script>
+    <script src="soulride-core.js"></script>
+</head>
+<body>
+
+    <aside class="sidebar" id="sidebar">
+        <div class="logo"><h2>SoulRide AI</h2></div>
+        <ul class="menu" id="sidebarMenu">
+            <li id="dashboardMenu"><a href="dashboard.html"><i class='bx bx-home'></i><span>Dashboard</span></a></li>
+            <li id="garageMenu"><a href="garage.html"><i class='bx bx-car'></i><span>My Garage</span></a></li>
+            <li id="chatMenu"><a href="chat.html"><i class='bx bx-message-rounded-dots'></i><span>AI Chat</span></a></li>
+            <li id="maintenanceMenu"><a href="maintenance.html"><i class='bx bx-wrench'></i><span>Maintenance</span></a></li>
+            <li id="fuelMenu"><a href="fuel.html"><i class='bx bx-gas-pump'></i><span>Fuel Tracker</span></a></li>
+            <li id="tripMenu"><a href="trips.html"><i class='bx bx-map-alt'></i><span>Trips</span></a></li>
+            <li id="journeyMenu"><a href="achivement.html"><i class='bx bx-compass'></i><span>My Journey</span></a></li>
+            <li id="wishlistMenu"><a href="wishlist.html"><i class='bx bx-list-heart'></i><span>Wishlist</span></a></li>
+            <li id="profileMenu"><a href="profile.html"><i class='bx bx-user'></i><span>Profile</span></a></li>
+            <li class="active" id="settingsMenu"><a href="setting.html"><i class='bx bx-cog'></i><span>Settings</span></a></li>
+        </ul>
+    </aside>
+
+    <main class="main-content">
+        <header class="page-header">
+            <div class="header-titles">
+                <h1>Settings & Preferences</h1>
+                <p>Manage your account, customize the AI, and control your app experience.</p>
+            </div>
+        </header>
+
+        <div class="settings-layout">
+            
+            <div class="settings-sidebar">
+                <button class="nav-btn active" data-target="sec-account"><i class='bx bx-user-circle'></i> Account</button>
+                <button class="nav-btn" data-target="sec-garage"><i class='bx bxs-car-garage'></i> Garage Prefs</button>
+                <button class="nav-btn" data-target="sec-app"><i class='bx bx-paint-roll'></i> App Prefs</button>
+                <button class="nav-btn" data-target="sec-notif"><i class='bx bx-bell'></i> Notifications</button>
+                <button class="nav-btn" data-target="sec-ai"><i class='bx bx-bot'></i> AI Companion</button>
+                <button class="nav-btn" data-target="sec-privacy"><i class='bx bx-lock-alt'></i> Privacy & Sec</button>
+                <button class="nav-btn" data-target="sec-data"><i class='bx bx-data'></i> Data Mgmt</button>
+                <button class="nav-btn" data-target="sec-sync"><i class='bx bx-cloud-upload'></i> Backup & Sync</button>
+                <button class="nav-btn" data-target="sec-about"><i class='bx bx-info-circle'></i> About</button>
+                <button class="nav-btn" data-target="sec-support"><i class='bx bx-help-circle'></i> Support</button>
+                <button class="nav-btn text-red" data-target="sec-logout"><i class='bx bx-log-out'></i> Logout</button>
+            </div>
+
+            <div class="settings-content">
+                
+                <section id="sec-account" class="settings-section active-sec">
+                    <h2><i class='bx bx-user-circle'></i> Account Details</h2>
+                    <div class="profile-preview">
+                        <div class="pic-placeholder">SR</div>
+                        <div>
+                            <h3 id="displayUserName">Soul Rider</h3>
+                            <p>Joined: Jun 2026</p>
+                        </div>
+                    </div>
+                    <div class="setting-row"><label>Full Name</label><input type="text" id="accName" value="Soul Rider"></div>
+                    <div class="setting-row"><label>Email</label><input type="email" id="accEmail" value="rider@soulride.ai"></div>
+                    <div class="setting-row"><label>Phone</label><input type="tel" id="accPhone" value="+91 9876543210"></div>
+                    <div class="action-row">
+                        <button class="btn secondary-btn">Change Password</button>
+                        <button class="btn danger-btn">Delete Account</button>
+                    </div>
+                </section>
+
+                <section id="sec-garage" class="settings-section">
+                    <h2><i class='bx bxs-car-garage'></i> Garage & Vehicle Preferences</h2>
+                    <div class="setting-row"><label>Default Vehicle</label><select id="prefVehicle"><option>Loading...</option></select></div>
+                    <div class="setting-row"><label>Default Fuel Type</label><select id="prefFuel"><option>Petrol</option><option>Diesel</option><option>EV</option></select></div>
+                    <div class="setting-row"><label>Distance Unit</label><select id="prefUnit"><option>Kilometres (KM)</option><option>Miles (MI)</option></select></div>
+                    <div class="setting-row"><label>Currency</label><select id="prefCurrency"><option>Indian Rupee (₹)</option><option>USD ($)</option></select></div>
+                    <hr>
+                    <div class="setting-row"><label>Riding Style</label><select id="prefStyle"><option>Touring</option><option>Commuting</option><option>Track/Sport</option></select></div>
+                    <div class="setting-row"><label>Preferred Station</label><input type="text" id="prefStation" placeholder="e.g. Indian Oil"></div>
+                    <div class="setting-row"><label>Preferred Service Center</label><input type="text" id="prefService" placeholder="e.g. ABC Honda Service"></div>
+                    <div class="setting-row"><label>Weekend Ride Day</label><select id="prefRideDay"><option>Sunday</option><option>Saturday</option></select></div>
+                </section>
+
+                <section id="sec-app" class="settings-section">
+                    <h2><i class='bx bx-paint-roll'></i> App Preferences</h2>
+                    <div class="setting-row toggle-row">
+                        <label>Dark Mode</label>
+                        <label class="switch"><input type="checkbox" id="appDarkMode" checked><span class="slider round"></span></label>
+                    </div>
+                    <div class="setting-row"><label>Theme Color</label><select id="appThemeColor"><option>🔴 Red (Default)</option><option>🔵 Blue</option><option>🟢 Green</option><option>🟣 Purple</option></select></div>
+                    <div class="setting-row"><label>Language</label><select id="appLang"><option>English</option><option>தமிழ் (Tamil)</option><option>हिन्दी (Hindi)</option></select></div>
+                    <div class="setting-row"><label>Font Size</label><select id="appFont"><option>Medium</option><option>Small</option><option>Large</option></select></div>
+                </section>
+
+                <section id="sec-notif" class="settings-section">
+                    <h2><i class='bx bx-bell'></i> Notifications</h2>
+                    <div class="setting-row toggle-row"><label>Service Reminder</label><label class="switch"><input type="checkbox" id="notifService" checked><span class="slider round"></span></label></div>
+                    <div class="setting-row toggle-row"><label>Insurance & PUC</label><label class="switch"><input type="checkbox" id="notifDocs" checked><span class="slider round"></span></label></div>
+                    <div class="setting-row toggle-row"><label>Fuel Reminder</label><label class="switch"><input type="checkbox" id="notifFuel" checked><span class="slider round"></span></label></div>
+                    <div class="setting-row toggle-row"><label>Trip Planner</label><label class="switch"><input type="checkbox" id="notifTrip"><span class="slider round"></span></label></div>
+                    <div class="setting-row toggle-row"><label>Wishlist & Achievements</label><label class="switch"><input type="checkbox" id="notifAchieve" checked><span class="slider round"></span></label></div>
+                    <div class="setting-row toggle-row"><label>AI Proactive Messages</label><label class="switch"><input type="checkbox" id="notifAi" checked><span class="slider round"></span></label></div>
+                </section>
+
+                <section id="sec-ai" class="settings-section">
+                    <h2><i class='bx bx-bot'></i> AI Companion Settings</h2>
+                    <div class="setting-row"><label>AI Name</label><input type="text" id="aiName" value="Nova"></div>
+                    <div class="setting-row"><label>AI Personality</label><select id="aiPersona"><option>Friendly & Helpful</option><option>Professional Mechanic</option><option>Sarcastic Rider</option></select></div>
+                    <div class="setting-row"><label>AI Voice Gender</label><select id="aiVoice"><option>Female</option><option>Male</option></select></div>
+                    <div class="setting-row toggle-row"><label>Mute AI (Text Only)</label><label class="switch"><input type="checkbox" id="aiMute"><span class="slider round"></span></label></div>
+                    <hr>
+                    <div class="setting-row toggle-row"><label>Daily Greeting Messages</label><label class="switch"><input type="checkbox" id="aiGreet" checked><span class="slider round"></span></label></div>
+                    <div class="setting-row toggle-row"><label>Proactive Ride Tips</label><label class="switch"><input type="checkbox" id="aiTips" checked><span class="slider round"></span></label></div>
+                    <div class="setting-row toggle-row"><label>Maintenance Advice</label><label class="switch"><input type="checkbox" id="aiMaint" checked><span class="slider round"></span></label></div>
+                </section>
+
+                <section id="sec-privacy" class="settings-section">
+                    <h2><i class='bx bx-lock-alt'></i> Privacy & Security</h2>
+                    <div class="setting-row toggle-row"><label>Two-Factor Auth (2FA)</label><label class="switch"><input type="checkbox" id="priv2fa"><span class="slider round"></span></label></div>
+                    <div class="setting-row toggle-row"><label>Auto Logout (15 mins idle)</label><label class="switch"><input type="checkbox" id="privAutoLog"><span class="slider round"></span></label></div>
+                    <div class="action-row column">
+                        <button class="btn secondary-btn full-btn">View Login History</button>
+                        <button class="btn secondary-btn full-btn">Manage Active Devices</button>
+                    </div>
+                </section>
+
+                <section id="sec-data" class="settings-section">
+                    <h2><i class='bx bx-data'></i> Data Management</h2>
+                    <div class="action-row">
+                        <button class="btn success-btn" id="exportCsvBtn">Export CSV</button>
+                        <button class="btn success-btn" id="exportPdfBtn">Export PDF</button>
+                    </div>
+                    <div class="action-row" style="margin-top: 15px;">
+                        <button class="btn secondary-btn">Import Data</button>
+                        <button class="btn danger-btn" id="resetAppBtn">Reset App / Clear Cache</button>
+                    </div>
+                </section>
+
+                <section id="sec-sync" class="settings-section">
+                    <h2><i class='bx bx-cloud-upload'></i> Backup & Sync</h2>
+                    <p style="color:var(--text-secondary); margin-bottom:20px;">Last Sync: <strong id="lastSyncTime">Never</strong></p>
+                    <div class="setting-row toggle-row"><label>Firebase Auto-Sync</label><label class="switch"><input type="checkbox" id="syncFirebase" checked><span class="slider round"></span></label></div>
+                    <div class="setting-row toggle-row"><label>Google Drive Backup</label><label class="switch"><input type="checkbox" id="syncDrive"><span class="slider round"></span></label></div>
+                    <button class="btn primary-btn" id="syncNowBtn" style="margin-top: 15px;">Sync Now</button>
+                </section>
+
+                <section id="sec-about" class="settings-section">
+                    <h2><i class='bx bx-info-circle'></i> About</h2>
+                    <div class="about-card">
+                        <h3>SoulRide AI</h3>
+                        <p>Version: 1.0.0 (Beta)</p>
+                        <p>Developed with ❤️ for riders.</p>
+                        <div class="links" style="margin-top: 15px;">
+                            <a href="#">Release Notes</a> • <a href="#">Privacy Policy</a> • <a href="#">Terms of Service</a>
+                        </div>
+                    </div>
+                </section>
+
+                <section id="sec-support" class="settings-section">
+                    <h2><i class='bx bx-help-circle'></i> Support</h2>
+                    <div class="action-row column">
+                        <button class="btn secondary-btn full-btn"><i class='bx bx-book-open'></i> Help Center & FAQs</button>
+                        <button class="btn secondary-btn full-btn"><i class='bx bx-bug'></i> Report a Bug</button>
+                        <button class="btn primary-btn full-btn"><i class='bx bx-message-square-detail'></i> Contact Support</button>
+                    </div>
+                </section>
+
+                <section id="sec-logout" class="settings-section">
+                    <h2><i class='bx bx-log-out'></i> Logout</h2>
+                    <div class="logout-card">
+                        <p>Are you sure you want to securely log out of SoulRide AI?</p>
+                        <div class="action-row" style="margin-top: 20px;">
+                            <button class="btn secondary-btn" id="cancelLogout">NO, Cancel</button>
+                            <button class="btn danger-btn" id="confirmLogout">YES, Logout</button>
+                        </div>
+                    </div>
+                </section>
+
+            </div>
+        </div>
+    </main>
+
+    <script src="settings.js"></script>
+</body>
+</html>

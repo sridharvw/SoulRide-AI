@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<!-- Updated: 2026-09-09 -->
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Garage | SoulRide AI</title>
+
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+    <link rel="stylesheet" href="garage.css">
+    <link rel="stylesheet" href="global.css">
+    <script src="theme.js"></script>
+    <script src="soulride-core.js"></script>
+</head>
+<body>
+
+    <main class="garage-container" id="garageContainer">
+
+        <div class="garage-header" id="garageHeader">
+            <div>
+                <h1>My Garage</h1>
+                <p>Manage all your vehicles in one place.</p>
+            </div>
+
+            <button id="addNewVehicleBtn" onclick="window.location.href='add-vehicle.html';">
+                <i class='bx bx-plus'></i>
+                Add Vehicle
+            </button>
+        </div> <div class="garage-grid" id="garageGrid">
+
+            <div class="vehicle-card" id="vehicleCard1">
+
+                <div class="vehicle-image" style="background-color: #27272a; height: 200px; display: flex; align-items: center; justify-content: center;">
+                    <i class='bx bx-car' style="font-size: 80px; color: #555;"></i>
+                </div>
+
+                <div class="vehicle-info">
+                    <h2 id="vehicleName1">
+                        Honda CB350
+                    </h2>
+                    <p id="nickname1">
+                        Nickname: Shadow
+                    </p>
+                    <p id="vehicleYear1">
+                        Year: 2025
+                    </p>
+                    <p id="vehicleFuel1">
+                        Fuel: Petrol
+                    </p>
+                </div>
+
+                <div class="vehicle-actions">
+                    <button id="viewVehicleBtn1">
+                        View
+                    </button>
+                    <button id="editVehicleBtn1">
+                        Edit
+                    </button>
+                    <button id="deleteVehicleBtn1">
+                        Delete
+                    </button>
+                </div>
+
+            </div>
+            </div>
+
+    </main>
+
+    <script src="garage.js"></script>
+
+</body>
+</html>

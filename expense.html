@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<!-- Updated: 2026-09-09 -->
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SoulRide AI - Expenses</title>
+    <!-- Links to your master stylesheet for the sidebar/responsive fixes -->
+    <link rel="stylesheet" href="global.css">
+    <script src="theme.js"></script>
+    <script src="soulride-core.js"></script>
+    <nav class="sidebar" id="sidebar-nav">
+        <div class="sidebar-header">
+            SoulRide AI
+            <button class="sidebar-close" id="close-sidebar-btn">✖</button>
+        </div>
+        <ul class="nav-links">
+            <li><a href="dashboard.html">🏠 Dashboard</a></li>
+            <li><a href="expense.html" class="active">💰 expenses</a></li>
+            <li><a href="calendar.html">📅 Calendar</a></li>
+            <li><a href="analytics.html">📊 Analytics</a></li>
+            <li><a href="documents.html">📂 Digital Locker</a></li>
+            <li><a href="emergency.html">🚨 Emergency SOS</a></li>
+            <li><a href="notification.html">🔔 Notifications</a></li>
+            <li><a href="reports.html">📄 Reports</a></li>
+        </ul>
+    </nav>
+    
+    <style>
+        body { background-color: #11111b; font-family: sans-serif; color: white; margin: 0; }
+         
+        /* App Header */
+        .app-header {
+            display: flex; align-items: center; background: #1e1e2e;
+            padding: 15px 20px; box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+            position: sticky; top: 0; z-index: 100;
+        }
+        .app-header button { font-size: 24px; background: none; border: none; color: #cdd6f4; cursor: pointer; margin-right: 15px; }
+        .app-header h2 { margin: 0; font-size: 20px; }
+        .app-header a { color: white; text-decoration: none; }
+
+        /* Sidebar Navigation */
+        .sidebar {
+            position: fixed; left: -250px; top: 0; width: 250px; height: 100vh;
+            background: #181825; z-index: 200; transition: left 0.3s ease; 
+            box-shadow: 2px 0 15px rgba(0,0,0,0.6);
+        }
+        .sidebar.active { left: 0; }
+        .sidebar-header {
+            padding: 20px; font-size: 20px; font-weight: bold; 
+            border-bottom: 1px solid #313244; color: #cba6f7;
+            display: flex; justify-content: space-between;
+        }
+        .sidebar-close { background: none; border: none; color: #a6adc8; font-size: 20px; cursor: pointer; }
+        .nav-links { list-style: none; padding: 0; margin: 0; }
+        .nav-links li { border-bottom: 1px solid #313244; }
+        .nav-links a { display: block; padding: 15px 20px; color: #cdd6f4; text-decoration: none; font-size: 16px; }
+        .nav-links a:hover { background: #313244; }
+        .nav-links a.active { color: #f9e2af; font-weight: bold; background: #313244; border-left: 4px solid #f9e2af; }
+
+        .page-wrapper { max-width: 800px; margin: 0 auto; padding: 20px; }
+
+        
+        /* Navigation (Using div as you requested) */
+        .app-header {
+            display: flex; align-items: center; background: #1e1e2e;
+            padding: 15px 20px; box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+            position: sticky; top: 0; z-index: 100;
+        }
+        .app-header button { font-size: 24px; background: none; border: none; color: #cdd6f4; cursor: pointer; margin-right: 15px; }
+        .app-header h2 { margin: 0; font-size: 20px; }
+
+        .page-wrapper { max-width: 800px; margin: 0 auto; padding: 20px; }
+
+        /* Summary Cards */
+        .summary-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+        .summary-card {
+            background: #1e1e2e;
+            padding: 15px;
+            border-radius: 12px;
+            text-align: center;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+        }
+        .summary-card h4 { margin: 0 0 5px 0; color: #a6adc8; font-size: 13px; text-transform: uppercase; letter-spacing: 1px; }
+        .summary-card h2 { margin: 0; color: #cdd6f4; font-size: 24px; }
+        .summary-card.total h2 { color: #cba6f7; }
+        .summary-card.fuel h2 { color: #fab387; }
+        .summary-card.service h2 { color: #f38ba8; }
+
+        /* Expense List */
+        .expense-list { background: #1e1e2e; border-radius: 12px; padding: 10px 20px; }
+        .expense-item {
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 15px 0; border-bottom: 1px solid #313244;
+        }
+        .expense-item:last-child { border-bottom: none; }
+        .exp-details h4 { margin: 0 0 4px 0; font-size: 16px; color: #cdd6f4; }
+        .exp-details p { margin: 0; font-size: 12px; color: #a6adc8; }
+        .exp-amount { font-size: 16px; font-weight: bold; }
+        .exp-amount.fuel { color: #fab387; }
+        .exp-amount.service { color: #f38ba8; }
+        .exp-amount.insurance { color: #89b4fa; }
+
+        /* Floating Add Button & Modal */
+        .fab-button {
+            position: fixed; bottom: 30px; right: 30px; width: 60px; height: 60px;
+            background: #a6e3a1; color: #11111b; border-radius: 50%; font-size: 30px;
+            border: none; box-shadow: 0 4px 15px rgba(0,0,0,0.4); cursor: pointer; z-index: 10;
+        }
+        .modal {
+            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.7); justify-content: center; align-items: center; z-index: 200;
+        }
+        .modal-content { background: #1e1e2e; padding: 25px; border-radius: 12px; width: 90%; max-width: 400px; }
+        .form-group { margin-bottom: 15px; }
+        .form-group label { display: block; margin-bottom: 5px; color: #a6adc8; }
+        .form-group input, .form-group select {
+            width: 100%; padding: 10px; border-radius: 6px; border: 1px solid #45475a;
+            background: #11111b; color: white; box-sizing: border-box;
+        }
+        .btn-save { background: #a6e3a1; color: #111; padding: 10px; width: 100%; border: none; border-radius: 6px; font-weight: bold; cursor: pointer;}
+        .btn-cancel { background: #f38ba8; color: #111; padding: 10px; width: 100%; border: none; border-radius: 6px; font-weight: bold; cursor: pointer; margin-top: 10px;}
+    </style>
+</head>
+<body>
+
+    <!-- App Header -->
+    <div class="app-header">
+        <button id="mobile-menu-btn">☰</button>
+        <h2>Expense Manager</h2>
+    </div>
+
+    <div class="page-wrapper main-content">
+        
+        <!-- Summary Cards -->
+        <div class="summary-grid">
+            <div class="summary-card total">
+                <h4>Total Spent</h4>
+                <h2 id="total-spent">₹0</h2>
+            </div>
+            <div class="summary-card fuel">
+                <h4>Fuel</h4>
+                <h2 id="fuel-spent">₹0</h2>
+            </div>
+            <div class="summary-card service">
+                <h4>Service</h4>
+                <h2 id="service-spent">₹0</h2>
+            </div>
+        </div>
+
+        <h3 style="color: #cba6f7; margin-bottom: 15px;">Recent Transactions</h3>
+        
+        <!-- List Container -->
+        <div class="expense-list" id="expense-list-container">
+            <!-- Expenses will be injected here by JavaScript -->
+            <p style="color: #a6adc8; text-align: center; padding: 20px 0;">No expenses logged yet.</p>
+        </div>
+    </div>
+
+    <!-- Floating Action Button -->
+    <button class="fab-button" id="open-modal-btn">➕</button>
+
+    <!-- Add Expense Modal -->
+    <div class="modal" id="expense-modal">
+        <div class="modal-content">
+            <h3 style="margin-top: 0; color: #cdd6f4;">Log New Expense</h3>
+            <div class="form-group">
+                <label>Date</label>
+                <input type="date" id="exp-date" required>
+            </div>
+            <div class="form-group">
+                <label>Category</label>
+                <select id="exp-category">
+                    <option value="Fuel">Fuel</option>
+                    <option value="Service">Maintenance / Service</option>
+                    <option value="Insurance">Insurance / RC / Tolls</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Description</label>
+                <input type="text" id="exp-title" placeholder="e.g. Shell Petrol, Brake Pads" required>
+            </div>
+            <div class="form-group">
+                <label>Amount (₹)</label>
+                <input type="number" id="exp-amount" placeholder="0" required>
+            </div>
+            <button class="btn-save" id="save-exp-btn">Save Expense</button>
+            <button class="btn-cancel" id="close-modal-btn">Cancel</button>
+        </div>
+    </div>
+
+    <!-- JavaScript Logic -->
+    <script>
+
+        document.addEventListener('DOMContentLoaded', () => {
+            renderExpensePage();
+
+            // Mobile menu toggle
+            const menuBtn = document.getElementById('mobile-menu-btn');
+            if(menuBtn) {
+                menuBtn.addEventListener('click', () => {
+                    document.querySelector('.sidebar')?.classList.toggle('active');
+                });
+            }
+
+            // Modal Controls
+            const modal = document.getElementById('expense-modal');
+            document.getElementById('open-modal-btn').addEventListener('click', () => {
+                // Pre-fill date to today
+                document.getElementById('exp-date').value = new Date().toISOString().split('T')[0];
+                modal.style.display = 'flex';
+            });
+            document.getElementById('close-modal-btn').addEventListener('click', () => {
+                modal.style.display = 'none';
+            });
+
+            // Save new expense
+            document.getElementById('save-exp-btn').addEventListener('click', () => {
+                const date = document.getElementById('exp-date').value;
+                const category = document.getElementById('exp-category').value;
+                const title = document.getElementById('exp-title').value;
+                const amount = parseFloat(document.getElementById('exp-amount').value);
+
+                if(!date || !title || isNaN(amount)) {
+                    alert("Please fill in all details!");
+                    return;
+                }
+
+                // Save to core state
+                addExpense({
+                    vehicleId: getSelectedVehicleId(),
+                    category: category,
+                    amount: amount,
+                    date: date,
+                    title: title
+                });
+
+                // Reset form and close modal
+                document.getElementById('exp-title').value = '';
+                document.getElementById('exp-amount').value = '';
+                modal.style.display = 'none';
+
+                // Refresh the page data immediately
+                renderExpensePage();
+            });
+        });
+
+        // Function to update cards and list
+        function renderExpensePage() {
+            const expenses = getExpenses(getSelectedVehicleId());
+            
+            let totalSpent = 0;
+            let fuelSpent = 0;
+            let serviceSpent = 0;
+
+            const container = document.getElementById('expense-list-container');
+            container.innerHTML = '';
+
+            if (expenses.length === 0) {
+                container.innerHTML = '<p style="color: #a6adc8; text-align: center; padding: 20px 0;">No expenses logged yet.</p>';
+                return;
+            }
+
+            const sortedExpenses = expenses.sort((a, b) => new Date(b.date) - new Date(a.date));
+
+            sortedExpenses.forEach(exp => {
+                const amount = Number(exp.amount) || 0;
+                totalSpent += amount;
+                if(exp.category === 'Fuel') fuelSpent += amount;
+                if(exp.category === 'Service') serviceSpent += amount;
+
+                // Create list item
+                const item = document.createElement('div');
+                item.classList.add('expense-item');
+                
+                const catClass = exp.category.toLowerCase(); // 'fuel', 'service', or 'insurance'
+                
+                item.innerHTML = `
+                    <div class="exp-details">
+                        <h4>${exp.title}</h4>
+                        <p>${exp.date} • ${exp.category}</p>
+                    </div>
+                    <div class="exp-amount ${catClass}">₹${amount.toFixed(2)}</div>
+                `;
+                container.appendChild(item);
+            });
+
+            // Update DOM with calculated totals
+            document.getElementById('total-spent').innerText = `₹${totalSpent.toLocaleString()}`;
+            document.getElementById('fuel-spent').innerText = `₹${fuelSpent.toLocaleString()}`;
+            document.getElementById('service-spent').innerText = `₹${serviceSpent.toLocaleString()}`;
+        }
+    </script>
+</body>
+</html>

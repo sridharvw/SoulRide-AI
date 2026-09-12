@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SoulRide AI | Every Ride Has a Story</title>
+<link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+<script src="theme.js"></script>
+<script src="soulride-core.js"></script>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+
+:root{
+    --bg-deep: #0B0B14;
+    --bg-mid: #151523;
+    --surface: #1e1e2e;
+    --surface-soft: #191926;
+    --border-color: rgba(255,255,255,.08);
+    --text-main: #ffffff;
+    --text-muted: #a1a1aa;
+    --accent: #EF4444;
+    --accent-dark: #dc2626;
+}
+
+*{margin:0;padding:0;box-sizing:border-box;font-family:"Poppins",sans-serif;text-decoration:none;list-style:none;}
+
+html{scroll-behavior:smooth;}
+
+body{
+    background:linear-gradient(135deg, var(--bg-deep) 0%, var(--bg-mid) 100%);
+    color:var(--text-main);
+    overflow-x:hidden;
+}
+
+.section-title{text-align:center;margin-bottom:50px;}
+.section-title h2{font-size:34px;font-weight:600;}
+.section-title p{color:var(--text-muted);margin-top:10px;font-size:15px;}
+
+.btn{
+    display:inline-block;
+    padding:13px 28px;
+    border-radius:8px;
+    font-weight:600;
+    font-size:15px;
+    cursor:pointer;
+    border:none;
+    transition:.3s ease;
+}
+.primary-btn{background:var(--accent);color:#fff;box-shadow:0 4px 15px rgba(239,68,68,.3);}
+.primary-btn:hover{background:var(--accent-dark);box-shadow:0 6px 20px rgba(220,38,38,.5);transform:translateY(-2px);}
+.secondary-btn{background:transparent;color:#fff;border:1.5px solid var(--border-color);}
+.secondary-btn:hover{border-color:var(--accent);color:var(--accent);}
+
+/* Navbar */
+.navbar{
+    position:fixed;top:0;left:0;width:100%;
+    display:flex;justify-content:space-between;align-items:center;
+    padding:18px 60px;
+    background:rgba(18,18,18,.95);
+    border-bottom:1px solid var(--border-color);
+    z-index:1000;
+    transition:.3s ease;
+}
+.logo{display:flex;align-items:center;gap:8px;}
+.logo i{font-size:26px;color:var(--accent);}
+.logo h2{font-size:19px;font-weight:600;}
+.nav-links{display:flex;gap:32px;}
+.nav-links a{color:var(--text-muted);font-size:14.5px;font-weight:500;transition:.3s;}
+.nav-links a:hover{color:#fff;}
+.nav-buttons{display:flex;align-items:center;gap:18px;}
+.login-link{color:var(--text-muted);font-size:14.5px;font-weight:500;transition:.3s;}
+.login-link:hover{color:#fff;}
+.nav-buttons .btn{padding:10px 22px;font-size:14px;}
+
+/* Hero */
+.hero{
+    display:flex;align-items:center;justify-content:space-between;
+    padding:170px 60px 100px;gap:40px;
+}
+.hero-content{max-width:560px;}
+.hero-content h1{font-size:52px;line-height:1.15;font-weight:700;}
+.hero-content h1 span{color:var(--accent);}
+.hero-content p{color:var(--text-muted);font-size:16px;margin:24px 0 32px;line-height:1.7;}
+.hero-buttons{display:flex;gap:16px;}
+.hero-image{flex:1;display:flex;justify-content:center;}
+.image-placeholder{
+    width:100%;max-width:420px;aspect-ratio:4/3;
+    background:var(--surface);
+    border:1px solid var(--border-color);
+    border-radius:20px;
+    display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;
+    color:var(--text-muted);
+}
+.image-placeholder i{font-size:48px;color:var(--accent);}
+
+/* Features */
+.features{padding:110px 60px;}
+.feature-grid{
+    display:grid;grid-template-columns:repeat(3,1fr);gap:26px;max-width:1100px;margin:0 auto;
+}
+.feature-card{
+    background:var(--surface);
+    border:1px solid var(--border-color);
+    border-radius:16px;
+    padding:34px 28px;
+    transition:.3s ease;
+}
+.feature-card:hover{border-color:var(--accent);transform:translateY(-4px);}
+.feature-card i{font-size:30px;color:var(--accent);}
+.feature-card h3{font-size:18px;margin:16px 0 10px;font-weight:600;}
+.feature-card p{color:var(--text-muted);font-size:14px;line-height:1.6;}
+.explore-link{display:inline-flex;align-items:center;gap:6px;color:var(--accent);font-size:13.5px;font-weight:600;margin-top:16px;}
+
+/* Workflow */
+.workflow{padding:100px 60px;background:var(--surface-soft);border-top:1px solid var(--border-color);border-bottom:1px solid var(--border-color);}
+.workflow-grid{
+    display:flex;align-items:center;justify-content:center;gap:14px;flex-wrap:wrap;max-width:1100px;margin:0 auto;
+}
+.step-card{
+    background:var(--surface);
+    border:1px solid var(--border-color);
+    border-radius:14px;
+    padding:26px 22px;
+    text-align:center;
+    min-width:150px;
+}
+.step-number{
+    width:34px;height:34px;border-radius:50%;
+    background:var(--accent);color:#fff;font-weight:700;font-size:14px;
+    display:flex;align-items:center;justify-content:center;margin:0 auto 12px;
+}
+.step-card h3{font-size:14.5px;font-weight:600;}
+.arrow-icon{font-size:22px;color:var(--text-muted);}
+
+/* Dashboard preview */
+.preview{padding:110px 60px;display:flex;justify-content:center;}
+.preview-card{max-width:1000px;width:100%;text-align:center;}
+.preview-card h2{font-size:30px;font-weight:600;margin-bottom:34px;}
+.preview-mockups{display:flex;gap:22px;flex-wrap:wrap;justify-content:center;}
+.mockup{
+    flex:1;min-width:280px;aspect-ratio:16/10;
+    background:var(--surface);
+    border:1px solid var(--border-color);
+    border-radius:16px;
+    display:flex;align-items:center;justify-content:center;
+    color:var(--text-muted);font-size:14px;
+}
+
+/* AI Companion */
+.ai-card-section{padding:0 60px 110px;}
+.ai-card{
+    max-width:1100px;margin:0 auto;
+    background:var(--surface);
+    border:1px solid var(--border-color);
+    border-radius:22px;
+    padding:56px 60px;
+    display:flex;align-items:center;justify-content:space-between;gap:30px;
+    position:relative;overflow:hidden;
+}
+.ai-content{max-width:560px;}
+.ai-content h2{font-size:28px;font-weight:600;margin-bottom:16px;}
+.ai-content p{color:var(--text-muted);font-size:15px;line-height:1.7;margin-bottom:26px;}
+.ai-large-icon{font-size:130px;color:rgba(239,68,68,.15);}
+
+/* About */
+.about{padding:110px 60px;background:var(--surface-soft);border-top:1px solid var(--border-color);border-bottom:1px solid var(--border-color);}
+.why-list{
+    max-width:820px;margin:0 auto;
+    display:grid;grid-template-columns:repeat(2,1fr);gap:18px 40px;
+}
+.why-list li{display:flex;align-items:center;gap:10px;color:var(--text-muted);font-size:15px;}
+.why-list i{color:var(--accent);font-size:18px;}
+
+/* CTA */
+.cta{padding:110px 60px;text-align:center;}
+.cta-content h2{font-size:32px;font-weight:600;margin-bottom:14px;}
+.cta-content p{color:var(--text-muted);margin-bottom:30px;}
+
+/* Footer */
+.footer{padding:60px 60px 30px;background:var(--surface-soft);border-top:1px solid var(--border-color);}
+.footer-grid{
+    max-width:1100px;margin:0 auto;
+    display:grid;grid-template-columns:1.4fr 1fr 1fr 1.2fr;gap:30px;
+}
+.footer-brand h3{font-size:19px;margin-bottom:8px;}
+.footer-brand p{color:var(--text-muted);font-size:14px;}
+.footer-links,.footer-legal,.footer-social{display:flex;flex-direction:column;gap:12px;}
+.footer-links a,.footer-legal a,.footer-social a{color:var(--text-muted);font-size:14px;transition:.3s;}
+.footer-links a:hover,.footer-legal a:hover,.footer-social a:hover{color:var(--accent);}
+.footer-social a{display:flex;align-items:center;gap:8px;}
+.copyright{
+    text-align:center;color:var(--text-muted);font-size:13px;
+    margin-top:40px;padding-top:24px;border-top:1px solid var(--border-color);
+}
+
+/* Scroll-reveal animation */
+.hidden-element{opacity:0;transform:translateY(24px);transition:opacity .6s ease, transform .6s ease;}
+.hidden-element.visible{opacity:1;transform:translateY(0);}
+
+@media (max-width:900px){
+    .navbar{padding:16px 24px;}
+    .nav-links{display:none;}
+    .hero{flex-direction:column;padding:150px 24px 70px;text-align:center;}
+    .hero-content{max-width:100%;}
+    .hero-buttons{justify-content:center;}
+    .features,.workflow,.preview,.about,.cta,.footer,.ai-card-section{padding-left:24px;padding-right:24px;}
+    .feature-grid{grid-template-columns:1fr;}
+    .why-list{grid-template-columns:1fr;}
+    .footer-grid{grid-template-columns:1fr 1fr;}
+    .ai-card{flex-direction:column;text-align:center;padding:44px 30px;}
+    .ai-large-icon{font-size:90px;}
+}
+</style>
+</head>
+<body>
+
+<nav class="navbar" id="navbar">
+    <div class="logo">
+        <i class='bx bx-car'></i>
+        <h2>SoulRide AI</h2>
+    </div>
+    <ul class="nav-links">
+        <li><a href="#home">Home</a></li>
+        <li><a href="#features">Features</a></li>
+        <li><a href="#workflow">How It Works</a></li>
+        <li><a href="#about">About</a></li>
+        <li><a href="#footer">Contact</a></li>
+    </ul>
+    <div class="nav-buttons">
+        <a href="login.html" class="login-link">Login</a>
+        <a href="login.html" class="btn primary-btn">Get Started</a>
+    </div>
+</nav>
+
+<section id="home" class="hero">
+    <div class="hero-content">
+        <h1>Every Ride<br><span>Has a Story.</span></h1>
+        <p>SoulRide AI brings your vehicle's maintenance, fuel, and trip history into a single dashboard, with an AI assistant that keeps you ahead of every service.</p>
+        <div class="hero-buttons">
+            <a href="login.html" class="btn primary-btn">Get Started</a>
+            <a href="#features" class="btn secondary-btn">Learn More</a>
+        </div>
+    </div>
+    <div class="hero-image">
+        <div class="image-placeholder">
+            <i class='bx bxs-dashboard'></i>
+            <p>Dashboard Mockup / Sedan Profile Preview</p>
+        </div>
+    </div>
+</section>
+
+<section id="features" class="features">
+    <div class="section-title">
+        <h2>Core Features</h2>
+        <p>Everything you need to manage your garage, in one place.</p>
+    </div>
+    <div class="feature-grid">
+        <div class="feature-card">
+            <i class='bx bx-car'></i>
+            <h3>Vehicle Garage</h3>
+            <p>Keep every vehicle profile, document, and specification organized and easy to find.</p>
+            <a href="#" class="explore-link">Explore <i class='bx bx-right-arrow-alt'></i></a>
+        </div>
+        <div class="feature-card">
+            <i class='bx bx-bot'></i>
+            <h3>AI Chat</h3>
+            <p>Ask questions about your vehicle and get real-time, data-informed answers.</p>
+            <a href="#" class="explore-link">Explore <i class='bx bx-right-arrow-alt'></i></a>
+        </div>
+        <div class="feature-card">
+            <i class='bx bx-gas-pump'></i>
+            <h3>Fuel Tracker</h3>
+            <p>Log every fill-up and track mileage trends over time with clear analytics.</p>
+            <a href="#" class="explore-link">Explore <i class='bx bx-right-arrow-alt'></i></a>
+        </div>
+        <div class="feature-card">
+            <i class='bx bx-wrench'></i>
+            <h3>Maintenance</h3>
+            <p>Stay ahead of services with predictive reminders for oil changes and more.</p>
+            <a href="#" class="explore-link">Explore <i class='bx bx-right-arrow-alt'></i></a>
+        </div>
+        <div class="feature-card">
+            <i class='bx bx-map-alt'></i>
+            <h3>Trip Journal</h3>
+            <p>Record routes, distances, and notes from every drive worth remembering.</p>
+            <a href="#" class="explore-link">Explore <i class='bx bx-right-arrow-alt'></i></a>
+        </div>
+        <div class="feature-card">
+            <i class='bx bx-trophy'></i>
+            <h3>Achievements</h3>
+            <p>Track milestones and progress as your garage and driving history grow.</p>
+            <a href="#" class="explore-link">Explore <i class='bx bx-right-arrow-alt'></i></a>
+        </div>
+    </div>
+</section>
+
+<section id="workflow" class="workflow">
+    <div class="section-title">
+        <h2>How It Works</h2>
+    </div>
+    <div class="workflow-grid">
+        <div class="step-card"><div class="step-number">1</div><h3>Create Account</h3></div>
+        <i class='bx bx-right-arrow-alt arrow-icon'></i>
+        <div class="step-card"><div class="step-number">2</div><h3>Add Vehicle</h3></div>
+        <i class='bx bx-right-arrow-alt arrow-icon'></i>
+        <div class="step-card"><div class="step-number">3</div><h3>Start Tracking</h3></div>
+        <i class='bx bx-right-arrow-alt arrow-icon'></i>
+        <div class="step-card"><div class="step-number">4</div><h3>Talk With AI</h3></div>
+        <i class='bx bx-right-arrow-alt arrow-icon'></i>
+        <div class="step-card"><div class="step-number">5</div><h3>Enjoy Every Ride</h3></div>
+    </div>
+</section>
+
+<section id="dashboardPreview" class="preview">
+    <div class="preview-card">
+        <h2>Dashboard Preview</h2>
+        <div class="preview-mockups">
+            <div class="mockup">My Garage Screenshot</div>
+            <div class="mockup">AI Chat Screenshot</div>
+        </div>
+    </div>
+</section>
+
+<section id="aiCompanion" class="ai-card-section">
+    <div class="ai-card">
+        <div class="ai-content">
+            <h2>Meet Your AI Companion</h2>
+            <p>Your AI assistant keeps track of upcoming services, fuel efficiency, and milestones, and is ready to answer questions about your vehicle whenever you need it.</p>
+            <a href="#features" class="btn primary-btn">See AI Features</a>
+        </div>
+        <i class='bx bx-bot ai-large-icon'></i>
+    </div>
+</section>
+
+<section id="about" class="about">
+    <div class="section-title">
+        <h2>Why SoulRide AI?</h2>
+    </div>
+    <ul class="why-list">
+        <li><i class='bx bx-check-circle'></i> Smart Maintenance</li>
+        <li><i class='bx bx-check-circle'></i> Fuel Expense Tracking</li>
+        <li><i class='bx bx-check-circle'></i> Personalized AI Companion</li>
+        <li><i class='bx bx-check-circle'></i> Beautiful Dark Dashboard</li>
+        <li><i class='bx bx-check-circle'></i> Multiple Vehicles Support</li>
+        <li><i class='bx bx-check-circle'></i> Interactive Trip Journal</li>
+        <li><i class='bx bx-check-circle'></i> Modification Wishlist</li>
+        <li><i class='bx bx-check-circle'></i> Gamified Achievements</li>
+    </ul>
+</section>
+
+<section id="cta" class="cta">
+    <div class="cta-content">
+        <h2>Ready to give your vehicle a soul?</h2>
+        <p>Start your journey today.</p>
+        <a href="login.html" class="btn primary-btn">Create Account</a>
+    </div>
+</section>
+
+<footer id="footer" class="footer">
+    <div class="footer-grid">
+        <div class="footer-brand">
+            <h3>SoulRide AI</h3>
+            <p>Every Ride Has a Story.</p>
+        </div>
+        <div class="footer-links">
+            <a href="#home">Home</a>
+            <a href="#features">Features</a>
+            <a href="#about">About</a>
+            <a href="#footer">Contact</a>
+        </div>
+        <div class="footer-legal">
+            <a href="#">Privacy Policy</a>
+            <a href="#">Terms of Service</a>
+        </div>
+        <div class="footer-social">
+            <a href="#"><i class='bx bxl-github'></i> GitHub</a>
+            <a href="#"><i class='bx bxl-linkedin'></i> LinkedIn</a>
+            <a href="#"><i class='bx bxl-instagram'></i> Instagram</a>
+            <a href="#"><i class='bx bx-envelope'></i> Email</a>
+        </div>
+    </div>
+    <div class="copyright">
+        <p>&copy; 2026 SoulRide AI. All rights reserved.</p>
+    </div>
+</footer>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+
+    // --- Dynamic Navbar on Scroll ---
+    const navbar = document.getElementById('navbar');
+
+    window.addEventListener('scroll', () => {
+        if (window.scrollY > 50) {
+            navbar.style.background = 'rgba(18, 18, 18, 0.98)';
+            navbar.style.boxShadow = '0 4px 20px rgba(0, 0, 0, 0.5)';
+        } else {
+            navbar.style.background = 'rgba(18, 18, 18, 0.95)';
+            navbar.style.boxShadow = 'none';
+            navbar.style.borderBottom = '1px solid var(--border-color)';
+        }
+    });
+
+    // --- Smooth Scroll for Nav Links ---
+    const navLinks = document.querySelectorAll('.nav-links a, .footer-links a, .hero-buttons a[href^="#"]');
+
+    navLinks.forEach(link => {
+        link.addEventListener('click', function (e) {
+            e.preventDefault();
+            const targetId = this.getAttribute('href');
+            if (targetId === '#') return;
+
+            const targetElement = document.querySelector(targetId);
+            if (targetElement) {
+                const navbarHeight = navbar.offsetHeight;
+                const targetPosition = targetElement.getBoundingClientRect().top + window.scrollY - navbarHeight;
+
+                window.scrollTo({
+                    top: targetPosition,
+                    behavior: 'smooth'
+                });
+            }
+        });
+    });
+
+    // --- Scroll-Reveal Animations ---
+    const observerOptions = {
+        root: null,
+        rootMargin: '0px',
+        threshold: 0.15
+    };
+
+    const observer = new IntersectionObserver((entries, observer) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('visible');
+                observer.unobserve(entry.target);
+            }
+        });
+    }, observerOptions);
+
+    const animateElements = document.querySelectorAll('.feature-card, .step-card, .ai-card, .section-title');
+
+    animateElements.forEach(el => {
+        el.classList.add('hidden-element');
+        observer.observe(el);
+    });
+
+});
+</script>
+
+</body>
+</html>
