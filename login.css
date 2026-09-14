@@ -250,3 +250,95 @@ form {
     background: #EF4444;
     box-shadow: 0 4px 15px rgba(239,68,68,.3);
 }
+
+@media (max-width: 650px) {
+    body {
+        padding: 16px;
+    }
+
+    .container {
+        width: min(100%, 430px);
+        height: min(720px, calc(100vh - 32px));
+        margin: 0;
+        touch-action: pan-y;
+    }
+
+    .form-box {
+        top: 0;
+        right: 0;
+        width: 100%;
+        height: 62%;
+        padding: 28px 24px;
+        z-index: 3;
+        transition: top .6s ease-in-out 1.2s, visibility 0s 1s;
+    }
+
+    .container.active .form-box {
+        top: 38%;
+        right: 0;
+    }
+
+    .toggle-box::before {
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        border-radius: 0;
+        z-index: 0;
+        transition: 1.8s ease-in-out;
+    }
+
+    .container.active .toggle-box::before {
+        top: 0;
+        left: 0;
+    }
+
+    .toggle-panel {
+        width: 100%;
+        height: 38%;
+        padding: 24px;
+        transition: top .6s ease-in-out;
+    }
+
+    .toggle-panel.toggle-left {
+        top: 62%;
+        left: 0;
+        transition-delay: 1.2s;
+    }
+
+    .container.active .toggle-panel.toggle-left {
+        top: -38%;
+        left: 0;
+        transition-delay: 0s;
+    }
+
+    .toggle-panel.toggle-right {
+        top: -38%;
+        right: 0;
+        transition-delay: 0s;
+    }
+
+    .container.active .toggle-panel.toggle-right {
+        top: 0;
+        right: 0;
+        transition-delay: 1.2s;
+    }
+
+    .container h1 {
+        font-size: 28px;
+        line-height: 1.2;
+    }
+
+    .container p {
+        margin: 10px 0;
+    }
+
+    .input-box {
+        margin: 18px 0;
+    }
+
+    .toggle-panel h1,
+    .toggle-panel p {
+        text-align: center;
+    }
+}

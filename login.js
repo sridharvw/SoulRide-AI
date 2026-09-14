@@ -16,6 +16,32 @@ loginBtn.addEventListener('click', () => {
     container.classList.remove('active');
 });
 
+// Use vertical swipes on phones and horizontal swipes on wider screens.
+let swipeStartX = 0;
+let swipeStartY = 0;
+
+container.addEventListener('touchstart', (event) => {
+    const touch = event.changedTouches[0];
+    swipeStartX = touch.clientX;
+    swipeStartY = touch.clientY;
+}, { passive: true });
+
+container.addEventListener('touchend', (event) => {
+    const touch = event.changedTouches[0];
+    const deltaX = touch.clientX - swipeStartX;
+    const deltaY = touch.clientY - swipeStartY;
+    const isMobile = window.matchMedia('(max-width: 650px)').matches;
+    const distance = isMobile ? Math.abs(deltaY) : Math.abs(deltaX);
+
+    if (distance < 50) return;
+
+    if (isMobile) {
+        container.classList.toggle('active', deltaY < 0);
+    } else {
+        container.classList.toggle('active', deltaX < 0);
+    }
+}, { passive: true });
+
 // --- 2. REGISTRATION LOGIC ---
 registerForm.addEventListener('submit', (e) => {
     e.preventDefault(); 
