@@ -270,12 +270,20 @@ form {
         height: 62%;
         padding: 28px 24px;
         z-index: 3;
-        transition: top .6s ease-in-out 1.2s, visibility 0s 1s;
+        transition: top .6s ease-in-out 1.2s;
     }
 
     .container.active .form-box {
         top: 38%;
         right: 0;
+    }
+
+    .container.active .form-box.register {
+        visibility: visible;
+    }
+
+    .container.active .form-box.login {
+        visibility: hidden;
     }
 
     .toggle-box::before {
