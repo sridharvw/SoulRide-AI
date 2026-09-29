@@ -1733,3 +1733,101 @@ body.font-large h1 {
         font-size: 9px;
     }
 }
+
+.vehicle-card.has-vehicle {
+    display: grid;
+    grid-template-columns: minmax(0, 0.95fr) minmax(0, 1fr);
+    grid-template-rows: auto auto auto;
+    align-items: center;
+    gap: 12px clamp(22px, 4vw, 48px);
+    padding: clamp(18px, 3vw, 30px);
+    border-style: solid;
+    text-align: left;
+}
+
+.vehicle-card.has-vehicle .vehicle-photo,
+.vehicle-card.has-vehicle > i {
+    grid-column: 1;
+    grid-row: 1 / 4;
+    width: 100%;
+    border-radius: 11px;
+    background: #101116;
+}
+
+.vehicle-card.has-vehicle .vehicle-photo {
+    display: block;
+    height: clamp(250px, 28vw, 360px);
+    background: transparent;
+    object-fit: contain;
+    object-position: center;
+}
+
+.vehicle-card.has-vehicle > i {
+    display: grid;
+    place-items: center;
+    margin: 0;
+}
+
+.vehicle-card.has-vehicle h2,
+.vehicle-card.has-vehicle p,
+.vehicle-card.has-vehicle .btn {
+    grid-column: 2;
+    justify-self: start;
+}
+
+.vehicle-card.has-vehicle h2 {
+    align-self: end;
+    margin: 0;
+}
+
+.vehicle-card.has-vehicle p {
+    align-self: start;
+    margin: 0;
+}
+
+.vehicle-card.has-vehicle .btn {
+    align-self: start;
+    margin-top: 8px;
+}
+
+@media screen and (max-width: 600px) {
+    .vehicle-card.has-vehicle {
+        grid-template-columns: minmax(0, 1fr);
+        grid-template-rows: auto auto auto auto;
+        justify-items: center;
+        gap: 14px;
+        padding: 18px;
+        text-align: center;
+    }
+
+    .vehicle-card.has-vehicle .vehicle-photo,
+    .vehicle-card.has-vehicle > i {
+        grid-column: 1;
+        grid-row: 1;
+        width: min(100%, 420px);
+    }
+
+    .vehicle-card.has-vehicle .vehicle-photo {
+        height: clamp(180px, 55vw, 270px);
+    }
+
+    .vehicle-card.has-vehicle h2,
+    .vehicle-card.has-vehicle p,
+    .vehicle-card.has-vehicle .btn {
+        grid-column: 1;
+        justify-self: center;
+    }
+
+    .vehicle-card.has-vehicle h2 {
+        grid-row: 2;
+    }
+
+    .vehicle-card.has-vehicle p {
+        grid-row: 3;
+    }
+
+    .vehicle-card.has-vehicle .btn {
+        grid-row: 4;
+        margin-top: 2px;
+    }
+}

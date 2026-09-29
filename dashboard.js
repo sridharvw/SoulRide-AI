@@ -136,11 +136,16 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // --- Load username into profile dropdown ---
     const dropdownUsername = document.getElementById('dropdownUsername');
+    const profileImage = document.getElementById('profileImage');
     const savedUserData = localStorage.getItem('soulride_user');
     if (dropdownUsername && savedUserData) {
         const user = JSON.parse(savedUserData);
         dropdownUsername.textContent = user.username;
         dropdownUsername.nextElementSibling.textContent = `@${user.username.toLowerCase().replace(/\s+/g, '_')}`;
+        if (profileImage && typeof user.profilePicture === 'string' && user.profilePicture.startsWith('data:image/')) {
+            profileImage.src = user.profilePicture;
+            profileImage.alt = `${user.username}'s profile photo`;
+        }
     }
 
 });

@@ -128,6 +128,95 @@
         .prev-title { color: #e0e0e0; }
         .prev-date { color: #a1a1aa; font-size: 12px; margin-top: 4px; }
         .prev-amount { font-weight: bold; color: #e0e0e0; }
+
+        .print-heading { display: none; }
+
+        @media print {
+            html, body {
+                width: 100%;
+                min-height: 0;
+                background: #ffffff !important;
+                color: #111111 !important;
+                print-color-adjust: exact;
+                -webkit-print-color-adjust: exact;
+            }
+
+            .sidebar,
+            .app-header,
+            .config-card {
+                display: none !important;
+            }
+
+            .page-wrapper {
+                width: 100%;
+                max-width: none;
+                margin: 0;
+                padding: 0;
+            }
+
+            .print-heading {
+                display: block;
+                margin-bottom: 18px;
+                padding-bottom: 12px;
+                border-bottom: 2px solid #222222;
+                color: #111111 !important;
+            }
+
+            .print-heading h1 {
+                margin: 0 0 5px;
+                font-size: 20pt;
+            }
+
+            .print-heading p {
+                margin: 0;
+                color: #444444 !important;
+                font-size: 10pt;
+            }
+
+            .preview-section {
+                padding: 0;
+                border: 0;
+                border-radius: 0;
+                background: #ffffff !important;
+                box-shadow: none !important;
+                color: #111111 !important;
+                opacity: 1 !important;
+            }
+
+            .preview-header {
+                border-color: #999999;
+            }
+
+            .preview-header h3,
+            .record-count,
+            .preview-item,
+            .prev-title,
+            .prev-date,
+            .prev-amount {
+                background: transparent !important;
+                color: #111111 !important;
+                opacity: 1 !important;
+                text-shadow: none !important;
+            }
+
+            .record-count {
+                border-color: #999999;
+            }
+
+            .preview-list {
+                max-height: none !important;
+                overflow: visible !important;
+            }
+
+            .preview-item {
+                break-inside: avoid;
+                border-bottom: 1px solid #dddddd;
+            }
+
+            .preview-item[style] {
+                border-top-color: #555555 !important;
+            }
+        }
     </style>
 </head>
 <body>
@@ -198,6 +287,10 @@
 
         <!-- Data Preview -->
         <div class="preview-section">
+            <div class="print-heading">
+                <h1>SoulRide AI</h1>
+                <p id="printReportDetails">Vehicle report</p>
+            </div>
             <div class="preview-header">
                 <h3>Data Preview</h3>
                 <span class="record-count" id="record-count">0 Records</span>
@@ -270,6 +363,12 @@
             const typeFilter = document.getElementById('report-type').value;
             const startDate = document.getElementById('start-date').value;
             const endDate = document.getElementById('end-date').value;
+            const selectedType = document.getElementById('report-type').selectedOptions[0].textContent;
+            const printDetails = document.getElementById('printReportDetails');
+            if (printDetails) {
+                const period = [startDate, endDate].filter(Boolean).join(' to ') || 'All dates';
+                printDetails.textContent = `${selectedType} · ${period} · Generated ${new Date().toLocaleDateString()}`;
+            }
 
             
             filteredData = allExpenses.filter(exp => {
