@@ -299,15 +299,11 @@
         // --- 2. DYNAMIC CONTEXT INJECTION (PULLS FROM LOCAL STORAGE) ---
         const getUserVehicleContext = () => {
             // Attempt to get the vehicles array from localStorage
-            const storedVehiclesStr = localStorage.getItem('soulride_vehicles');
             let vehicles = [];
-            
-            if (storedVehiclesStr) {
-                try {
-                    vehicles = JSON.parse(storedVehiclesStr);
-                } catch (e) {
-                    console.error("Error parsing vehicles from localStorage", e);
-                }
+            try {
+                vehicles = getVehicles();
+            } catch (e) {
+                console.warn("Could not load vehicle context", e);
             }
 
             // If the user has added at least one vehicle, build the context string
@@ -317,7 +313,7 @@
                 
                 // Build a context string based on the properties saved in your garage.js
                 let contextStr = `The user rides a `;
-                if (myBike.make) contextStr += `${myBike.make} `;
+                if (myBike.brand) contextStr += `${myBike.brand} `;
                 if (myBike.model) contextStr += `${myBike.model}. `;
                 if (myBike.nickname) contextStr += `The bike's nickname is "${myBike.nickname}". `;
                 if (myBike.odometer) contextStr += `Current Odometer: ${myBike.odometer} km. `;

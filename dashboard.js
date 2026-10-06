@@ -14,9 +14,38 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     const searchInput = document.getElementById("searchInput");
+    const searchResults = document.getElementById("searchResults");
     if (searchInput) {
-        searchInput.addEventListener("keyup", function () {
-            console.log("Searching :", this.value);
+        searchInput.addEventListener("input", function () {
+            const query = this.value.trim().toLowerCase();
+            if (!searchResults) return;
+            searchResults.innerHTML = '';
+            if (!query) {
+                searchResults.classList.remove('active');
+                return;
+            }
+            const state = getAppState();
+            const records = [
+                ...state.vehicles.map(item => ({ title: item.nickname || `${item.brand || ''} ${item.model || ''}`, type: 'Vehicle', url: 'garage.html' })),
+                ...state.trips.map(item => ({ title: item.destination || 'Trip', type: 'Trip', url: 'trip.html' })),
+                ...state.services.map(item => ({ title: item.category || item.title || 'Service', type: 'Service', url: 'maintenance.html' })),
+                ...state.fuelLogs.map(item => ({ title: item.station || 'Fuel log', type: 'Fuel', url: 'fueltracker.html' })),
+                ...state.documents.map(item => ({ title: item.name || item.title || 'Document', type: 'Document', url: 'documents.html' }))
+            ].filter(item => item.title.toLowerCase().includes(query)).slice(0, 8);
+            if (!records.length) {
+                searchResults.innerHTML = '<div class="search-result">No matching records</div>';
+            } else {
+                records.forEach(item => {
+                    const link = document.createElement('a');
+                    link.className = 'search-result';
+                    link.href = item.url;
+                    link.innerHTML = `<strong></strong><small></small>`;
+                    link.querySelector('strong').textContent = item.title;
+                    link.querySelector('small').textContent = item.type;
+                    searchResults.appendChild(link);
+                });
+            }
+            searchResults.classList.add('active');
         });
     }
 
@@ -32,6 +61,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const profileBtn = document.getElementById('profileBtn');
     const profileDropdown = document.getElementById('profileDropdown');
+    const profileImageFallback = document.getElementById('profileImageFallback');
 
     if (notificationBtn && notificationsPanel) {
         notificationBtn.onclick = function (event) {
@@ -55,6 +85,9 @@ document.addEventListener("DOMContentLoaded", () => {
         }
         if (profileDropdown && !profileDropdown.contains(event.target)) {
             profileDropdown.classList.remove('active');
+        }
+        if (searchResults && !searchResults.contains(event.target) && event.target !== searchInput) {
+            searchResults.classList.remove('active');
         }
     });
 
@@ -134,66 +167,48 @@ document.addEventListener("DOMContentLoaded", () => {
         statService.textContent = getNextService(equippedVehicle.id).label;
     }
 
+    const summary = getDashboardSummary(getSelectedVehicleId());
+    const distanceBox = document.getElementById('dash-total-distance');
+    const fuelBox = document.getElementById('dash-fuel-spent');
+    if (distanceBox) distanceBox.textContent = `${summary.totalDistance.toLocaleString()} km`;
+    if (fuelBox) fuelBox.textContent = `₹${summary.fuelSpent.toLocaleString()}`;
+
     // --- Load username into profile dropdown ---
     const dropdownUsername = document.getElementById('dropdownUsername');
     const profileImage = document.getElementById('profileImage');
     const savedUserData = localStorage.getItem('soulride_user');
     if (dropdownUsername && savedUserData) {
-        const user = JSON.parse(savedUserData);
-        dropdownUsername.textContent = user.username;
-        dropdownUsername.nextElementSibling.textContent = `@${user.username.toLowerCase().replace(/\s+/g, '_')}`;
-        if (profileImage && typeof user.profilePicture === 'string' && user.profilePicture.startsWith('data:image/')) {
-            profileImage.src = user.profilePicture;
-            profileImage.alt = `${user.username}'s profile photo`;
+        try {
+            const user = JSON.parse(savedUserData);
+            const username = typeof user.username === 'string' && user.username.trim()
+                ? user.username.trim()
+                : 'Rider Name';
+            dropdownUsername.textContent = username;
+            if (dropdownUsername.nextElementSibling) {
+                dropdownUsername.nextElementSibling.textContent = `@${username.toLowerCase().replace(/\s+/g, '_')}`;
+            }
+            if (profileImage && typeof user.profilePicture === 'string' && user.profilePicture.startsWith('data:image/')) {
+                profileImage.src = user.profilePicture;
+                profileImage.alt = `${username}'s profile photo`;
+                profileImage.hidden = false;
+                if (profileImageFallback) profileImageFallback.hidden = true;
+            }
+        } catch (error) {
+            console.warn('Could not load saved profile data.', error);
         }
     }
 
-});
-
-document.addEventListener('DOMContentLoaded', () => {
-    // 1. Fetch the master database state
-    const state = getAppState();
-    
-    // 2. Target the dashboard container (make sure you have a div with this ID in dashboard.html)
-    const reviewContainer = document.getElementById('quick-review-container');
-    
-    if (reviewContainer) {
-        reviewContainer.innerHTML = ''; // Clear loading text
-        
-        // 3. Check if any trips exist
-        if (state.trips && state.trips.length > 0) {
-            // Get the last item in the array (most recent trip)
-            const lastTrip = state.trips[state.trips.length - 1];
-            
-            // Inject it into the HTML
-            reviewContainer.innerHTML = `
-                <div class="review-card">
-                    <h4>Recent Trip: ${lastTrip.destination}</h4>
-                    <p>Distance: ${lastTrip.distance} km</p>
-                    <p>Date: ${lastTrip.date}</p>
-                </div>
-            `;
-        } else {
-            reviewContainer.innerHTML = '<p>No recent trips found. Start riding!</p>';
+    const activityBox = document.getElementById('activityBox');
+    const trips = getAppState().trips;
+    if (activityBox && trips.length > 0) {
+        const lastTrip = trips[trips.length - 1];
+        const activityTitle = document.getElementById('activityTitle');
+        const activityText = document.getElementById('activityText');
+        if (activityTitle) activityTitle.textContent = `Recent Trip: ${lastTrip.destination || 'Unnamed destination'}`;
+        if (activityText) {
+            const distance = Number(lastTrip.distance ?? lastTrip.distanceKm) || 0;
+            activityText.textContent = `${distance.toLocaleString()} km · ${lastTrip.date || 'Date not recorded'}`;
         }
     }
-});
-document.addEventListener('DOMContentLoaded', () => {
-    // 1. Fetch the master database state
-    const state = getAppState();
 
-    // --- NEW LOGIC: UPDATE DASHBOARD SUMMARY CARDS ---
-    
-    const summary = getDashboardSummary(getSelectedVehicleId());
-
-    const totalDistance = getTotalDistance(getSelectedVehicleId());
-
-    // Inject the calculated totals into the HTML boxes
-    const distanceBox = document.getElementById('dash-total-distance');
-    const fuelBox = document.getElementById('dash-fuel-spent');
-
-    if (distanceBox) distanceBox.innerText = totalDistance + ' km';
-    if (fuelBox) fuelBox.innerText = '₹' + summary.fuelSpent.toLocaleString();
-
-    // --- KEEP YOUR EXISTING QUICK REVIEW LOGIC BELOW THIS ---
 });

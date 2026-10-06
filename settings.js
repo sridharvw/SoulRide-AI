@@ -9,9 +9,9 @@ document.addEventListener("DOMContentLoaded", () => {
     setLink("garageMenu", "garage.html");
     setLink("chatMenu", "chat.html");
     setLink("maintenanceMenu", "maintenance.html");
-    setLink("fuelMenu", "fuel.html");
+    setLink("fuelMenu", "fueltracker.html");
     setLink("tripMenu", "trip.html");
-    setLink("journeyMenu", "achivement.html");
+    setLink("journeyMenu", "achievement.html");
     setLink("wishlistMenu", "wishlist.html");
     setLink("profileMenu", "profile.html");
     setLink("settingsMenu", "setting.html");
@@ -131,8 +131,51 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
     document.getElementById('exportCsvBtn').addEventListener('click', () => {
-        alert("Preparing CSV export... Check your downloads folder in a moment.");
+        const state = getAppState();
+        const rows = [['Type', 'Date', 'Title', 'Amount']];
+        getFinancialEntries(getSelectedVehicleId()).forEach(entry => rows.push([
+            entry.category || 'Other', entry.date || '', entry.title || '', entry.amount || 0
+        ]));
+        const csv = rows.map(row => row.map(value => `"${String(value).replace(/"/g, '""')}"`).join(',')).join('\n');
+        const link = document.createElement('a');
+        link.href = `data:text/csv;charset=utf-8,${encodeURIComponent(csv)}`;
+        link.download = `soulride-data-${new Date().toISOString().slice(0, 10)}.csv`;
+        link.click();
     });
+
+    document.getElementById('exportPdfBtn').addEventListener('click', () => window.print());
+
+    document.getElementById('exportJsonBtn').addEventListener('click', () => {
+        const blob = new Blob([JSON.stringify(getAppState(), null, 2)], { type: 'application/json' });
+        const link = document.createElement('a');
+        link.href = URL.createObjectURL(blob);
+        link.download = `soulride-backup-${new Date().toISOString().slice(0, 10)}.json`;
+        link.click();
+        URL.revokeObjectURL(link.href);
+    });
+
+    const importButton = document.getElementById('importDataBtn');
+    const importInput = document.getElementById('importDataInput');
+    if (importButton && importInput) {
+        importButton.addEventListener('click', () => importInput.click());
+        importInput.addEventListener('change', async () => {
+            const file = importInput.files && importInput.files[0];
+            if (!file) return;
+            try {
+                const imported = JSON.parse(await file.text());
+                if (!imported || !Array.isArray(imported.vehicles) || !Array.isArray(imported.trips)) {
+                    throw new Error('The backup file is missing required data.');
+                }
+                saveAppState(imported);
+                alert('Backup imported successfully.');
+                window.location.reload();
+            } catch (error) {
+                alert(`Import failed: ${error.message}`);
+            } finally {
+                importInput.value = '';
+            }
+        });
+    }
 
     document.getElementById('syncNowBtn').addEventListener('click', () => {
         const btn = document.getElementById('syncNowBtn');

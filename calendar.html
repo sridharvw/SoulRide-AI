@@ -224,7 +224,7 @@
             <!-- Highlighted Calendar Item -->
             <li><a href="calendar.html" class="active"><i class='bx bx-calendar'></i> Calendar</a></li>
             <li><a href="wishlist.html"><i class='bx bx-heart'></i> Wishlist</a></li>
-            <li><a href="achievements.html"><i class='bx bx-trophy'></i> Achievements</a></li>
+            <li><a href="achievement.html"><i class='bx bx-trophy'></i> Achievements</a></li>
             <li><a href="trip.html"><i class='bx bx-map'></i> Trips</a></li>
             <li><a href="profile.html"><i class='bx bx-user'></i> Profile</a></li>
             <li><a href="setting.html"><i class='bx bx-cog'></i> Settings</a></li>
@@ -298,7 +298,7 @@
     <!-- Script injected directly for self-containment -->
     <script>
 
-        let currentDate = new Date(2026, 5, 30); // Default to June 2026
+        let currentDate = new Date();
         let selectedDateString = ""; // Remembers which date the user clicked
 
         document.addEventListener('DOMContentLoaded', () => {
@@ -439,7 +439,10 @@
                     cell.appendChild(dotsContainer);
                 }
                 
-                if (day === 30 && month === 5 && year === 2026) cell.classList.add('today');
+                const today = new Date();
+                if (day === today.getDate() && month === today.getMonth() && year === today.getFullYear()) {
+                    cell.classList.add('today');
+                }
                 
                 // Keep selected state active visually on re-render
                 if (formattedDate === selectedDateString) cell.classList.add('selected');

@@ -14,7 +14,7 @@ document.addEventListener("DOMContentLoaded", () => {
     setLink("garageMenu", "garage.html");
     setLink("chatMenu", "chat.html");
     setLink("maintenanceMenu", "maintenance.html");
-    setLink("fuelMenu", "fuel.html");
+    setLink("fuelMenu", "fueltracker.html");
     setLink("tripMenu", "trip.html"); // Fixed from trip.html
     setLink("journeyMenu", "journey.html");
     setLink("profileMenu", "profile.html");

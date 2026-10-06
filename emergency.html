@@ -116,7 +116,7 @@
             <li><a href="maintenance.html"><i class='bx bx-wrench'></i> Maintenance</a></li>
             <li><a href="fueltracker.html"><i class='bx bx-gas-pump'></i> Fuel Tracker</a></li>
             <li><a href="wishlist.html"><i class='bx bx-heart'></i> Wishlist</a></li>
-            <li><a href="achivement.html"><i class='bx bx-trophy'></i> Achievements</a></li>
+            <li><a href="achievement.html"><i class='bx bx-trophy'></i> Achievements</a></li>
             <li><a href="maps.html"><i class='bx bx-map-alt'></i> Trips / Maps</a></li>
             <li><a href="analytics.html"><i class='bx bx-bar-chart-alt-2'></i> Analytics</a></li>
             <li><a href="documents.html"><i class='bx bx-folder'></i> Digital Locker</a></li>
@@ -159,6 +159,10 @@
                 <div class="icon">🛠️</div>
                 <div class="label">Roadside Assist</div>
             </a>
+            <button class="action-card" id="share-location-btn" type="button">
+                <div class="icon">📍</div>
+                <div class="label">Share My Location</div>
+            </button>
             <a href="https://www.google.com/maps/search/nearest+hospital" target="_blank" class="action-card">
                 <div class="icon">🏥</div>
                 <div class="label">Nearby Hospital</div>
@@ -170,11 +174,11 @@
             <h3>Medical ID <span class="edit-link" onclick="window.location.href='profile.html'">Edit</span></h3>
             <div class="info-row">
                 <span class="info-label">Blood Group</span>
-                <span class="info-value" id="blood-group">O+</span>
+                <span class="info-value" id="blood-group">Not set</span>
             </div>
             <div class="info-row">
                 <span class="info-label">Emergency Contact</span>
-                <span class="info-value" id="em-contact-name">Dad</span>
+                <span class="info-value" id="em-contact-name">Not set</span>
             </div>
             <div class="info-row">
                 <span class="info-label">Contact Number</span>
@@ -191,15 +195,15 @@
             <h3>Vehicle & Insurance <span class="edit-link" onclick="window.location.href='documents.html'">View Doc</span></h3>
             <div class="info-row">
                 <span class="info-label">Vehicle Reg. No.</span>
-                <span class="info-value">KA-01-AB-1234</span>
+                <span class="info-value" id="vehicle-registration">Not set</span>
             </div>
             <div class="info-row">
                 <span class="info-label">Insurance Provider</span>
-                <span class="info-value">HDFC Ergo</span>
+                <span class="info-value" id="insurance-provider">Not set</span>
             </div>
             <div class="info-row">
                 <span class="info-label">Policy Number</span>
-                <span class="info-value">POL-987654321</span>
+                <span class="info-value" id="policy-number">Not set</span>
             </div>
             <div class="info-row">
                 <span class="info-label">Insurance Helpline</span>
@@ -233,6 +237,35 @@
                 if (!sidebar.contains(event.target) && !menuBtn.contains(event.target) && sidebar.classList.contains('active')) {
                     sidebar.classList.remove('active');
                 }
+            });
+
+            try {
+                const user = JSON.parse(localStorage.getItem('soulride_user') || '{}');
+                document.getElementById('blood-group').textContent = user.bloodGroup || 'Not set';
+                document.getElementById('em-contact-name').textContent = user.emergencyContact || 'Not set';
+            } catch (error) {
+                console.warn('Could not load emergency profile.', error);
+            }
+            const vehicle = getEquippedVehicle();
+            if (vehicle) {
+                document.getElementById('vehicle-registration').textContent = vehicle.registration || 'Not set';
+                document.getElementById('insurance-provider').textContent = vehicle.insuranceProvider || 'Not set';
+                document.getElementById('policy-number').textContent = vehicle.policyNumber || 'Not set';
+            }
+            document.getElementById('share-location-btn').addEventListener('click', () => {
+                if (!navigator.geolocation) {
+                    alert('Location sharing is not supported on this device.');
+                    return;
+                }
+                navigator.geolocation.getCurrentPosition(async position => {
+                    const url = `https://maps.google.com/?q=${position.coords.latitude},${position.coords.longitude}`;
+                    try {
+                        await navigator.clipboard.writeText(`My current location: ${url}`);
+                        alert('Location link copied. Send it to your emergency contact.');
+                    } catch (error) {
+                        window.prompt('Copy this location link:', url);
+                    }
+                }, () => alert('Unable to access your current location.'));
             });
         });
     </script>

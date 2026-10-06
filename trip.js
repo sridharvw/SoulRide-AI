@@ -30,7 +30,7 @@ document.addEventListener("DOMContentLoaded", () => {
     setupNavigation("garageMenu", "garage.html");
     setupNavigation("chatMenu", "chat.html");
     setupNavigation("maintenanceMenu", "maintenance.html");
-    setupNavigation("fuelMenu", "fuel.html");
+    setupNavigation("fuelMenu", "fueltracker.html");
     setupNavigation("profileMenu", "profile.html");
     setupNavigation("logoutMenu", "login.html");
 

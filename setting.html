@@ -21,9 +21,9 @@
             <li id="garageMenu"><a href="garage.html"><i class='bx bx-car'></i><span>My Garage</span></a></li>
             <li id="chatMenu"><a href="chat.html"><i class='bx bx-message-rounded-dots'></i><span>AI Chat</span></a></li>
             <li id="maintenanceMenu"><a href="maintenance.html"><i class='bx bx-wrench'></i><span>Maintenance</span></a></li>
-            <li id="fuelMenu"><a href="fuel.html"><i class='bx bx-gas-pump'></i><span>Fuel Tracker</span></a></li>
-            <li id="tripMenu"><a href="trips.html"><i class='bx bx-map-alt'></i><span>Trips</span></a></li>
-            <li id="journeyMenu"><a href="achivement.html"><i class='bx bx-compass'></i><span>My Journey</span></a></li>
+            <li id="fuelMenu"><a href="fueltracker.html"><i class='bx bx-gas-pump'></i><span>Fuel Tracker</span></a></li>
+            <li id="tripMenu"><a href="trip.html"><i class='bx bx-map-alt'></i><span>Trips</span></a></li>
+            <li id="journeyMenu"><a href="achievement.html"><i class='bx bx-compass'></i><span>My Journey</span></a></li>
             <li id="wishlistMenu"><a href="wishlist.html"><i class='bx bx-list-heart'></i><span>Wishlist</span></a></li>
             <li id="profileMenu"><a href="profile.html"><i class='bx bx-user'></i><span>Profile</span></a></li>
             <li class="active" id="settingsMenu"><a href="setting.html"><i class='bx bx-cog'></i><span>Settings</span></a></li>
@@ -134,10 +134,12 @@
                     <h2><i class='bx bx-data'></i> Data Management</h2>
                     <div class="action-row">
                         <button class="btn success-btn" id="exportCsvBtn">Export CSV</button>
+                        <button class="btn success-btn" id="exportJsonBtn">Backup JSON</button>
                         <button class="btn success-btn" id="exportPdfBtn">Export PDF</button>
                     </div>
                     <div class="action-row" style="margin-top: 15px;">
-                        <button class="btn secondary-btn">Import Data</button>
+                        <button class="btn secondary-btn" id="importDataBtn">Import Data</button>
+                        <input type="file" id="importDataInput" accept="application/json" hidden>
                         <button class="btn danger-btn" id="resetAppBtn">Reset App / Clear Cache</button>
                     </div>
                 </section>

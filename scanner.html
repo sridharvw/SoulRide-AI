@@ -158,7 +158,7 @@
             <h3 style="margin-top: 0; color: #a6e3a1;">Scan Complete!</h3>
             <p style="color: #a6adc8; font-size: 14px;">Review and edit the extracted text:</p>
             <textarea id="extracted-text"></textarea>
-            <button class="btn-save" onclick="alert('Saved to documents!')">Save to Locker</button>
+            <button class="btn-save" id="save-scan-btn">Save to Locker</button>
             <button class="btn-discard" id="close-modal-btn">Discard</button>
         </div>
     </div>
@@ -179,6 +179,7 @@
             const progressText = document.getElementById('progress-text');
             const resultModal = document.getElementById('result-modal');
             const extractedTextArea = document.getElementById('extracted-text');
+            const saveScanBtn = document.getElementById('save-scan-btn');
 
             
             captureBtn.addEventListener('click', () => {
@@ -229,6 +230,27 @@
                 } finally {
                     captureBtn.disabled = false;
                 }
+            });
+
+            saveScanBtn.addEventListener('click', () => {
+                const text = extractedTextArea.value.trim();
+                if (!text) {
+                    alert('There is no extracted text to save.');
+                    return;
+                }
+                const state = getAppState();
+                state.documents.push({
+                    id: `scan_${Date.now()}`,
+                    type: 'Scanned Document',
+                    name: `Scan ${new Date().toLocaleDateString()}`,
+                    text,
+                    data: viewfinder.style.backgroundImage,
+                    vehicleId: getSelectedVehicleId(),
+                    createdAt: new Date().toISOString()
+                });
+                saveAppState(state);
+                resultModal.style.display = 'none';
+                alert('Saved to Digital Locker.');
             });
 
           

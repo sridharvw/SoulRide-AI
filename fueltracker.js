@@ -38,7 +38,7 @@ document.addEventListener("DOMContentLoaded", () => {
     setLink("maintenanceMenu", "maintenance.html");
     setLink("fuelMenu", "fueltracker.html");
     setLink("tripMenu", "trip.html");
-    setLink("journeyMenu", "achivement.html");
+    setLink("journeyMenu", "achievement.html");
     setLink("wishlistMenu", "wishlist.html");
     setLink("profileMenu", "profile.html");
     setLink("logoutMenu", "login.html");

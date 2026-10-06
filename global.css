@@ -1,5 +1,132 @@
 body {
     padding-top: env(safe-area-inset-top);
+    overflow-x: hidden;
+    -webkit-text-size-adjust: 100%;
+}
+
+img,
+video,
+canvas,
+svg {
+    max-width: 100%;
+}
+
+button,
+input,
+select,
+textarea {
+    max-width: 100%;
+}
+
+button,
+a {
+    -webkit-tap-highlight-color: transparent;
+}
+
+@media screen and (max-width: 768px) {
+    html {
+        overflow-x: hidden;
+    }
+
+    body {
+        min-width: 0;
+    }
+
+    .app-header {
+        min-height: 58px;
+        padding: 12px max(14px, env(safe-area-inset-left)) 12px 14px;
+    }
+
+    .app-header h2 {
+        min-width: 0;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        font-size: clamp(17px, 4.8vw, 20px);
+    }
+
+    .page-wrapper,
+    .main-content,
+    .settings-content,
+    .settings-container {
+        width: 100%;
+        max-width: 100%;
+        min-width: 0;
+    }
+
+    .page-wrapper {
+        padding: 16px max(14px, env(safe-area-inset-left)) calc(24px + env(safe-area-inset-bottom));
+    }
+
+    .date-row,
+    .form-row,
+    .action-row,
+    .export-actions {
+        flex-wrap: wrap;
+    }
+
+    .date-row .form-group,
+    .form-row > *,
+    .action-row > *,
+    .export-actions > * {
+        min-width: min(100%, 220px);
+        flex: 1 1 220px;
+    }
+
+    .card,
+    .config-card,
+    .preview-section,
+    .calendar-container,
+    .event-list,
+    .info-card,
+    .modal-content {
+        max-width: 100%;
+    }
+
+    table {
+        display: block;
+        max-width: 100%;
+        overflow-x: auto;
+        white-space: nowrap;
+    }
+
+    .modal-content {
+        width: calc(100% - 28px) !important;
+        max-height: calc(100dvh - 28px);
+        overflow-y: auto;
+    }
+
+    .leaflet-container,
+    #map {
+        min-height: 55dvh;
+    }
+}
+
+@media screen and (max-width: 480px) {
+    .page-wrapper {
+        padding-left: 12px;
+        padding-right: 12px;
+    }
+
+    .app-header {
+        padding-left: 12px;
+    }
+
+    .app-header button {
+        margin-right: 10px;
+        font-size: 22px;
+    }
+
+    .btn,
+    button {
+        min-height: 42px;
+    }
+
+    input,
+    select,
+    textarea {
+        font-size: 16px !important;
+    }
 }
 
 @media screen and (max-width: 768px) {

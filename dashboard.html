@@ -76,7 +76,7 @@
                 </a>
             </li>
             <li id="achievementMenu">
-                <a href="achivement.html">
+                <a href="achievement.html">
                     <i class='bx bx-trophy'></i>
                     <span>Achievements</span>
                 </a>
@@ -116,6 +116,7 @@
             <div class="search-box" id="searchBox">
                 <i class='bx bx-search' id="searchIcon"></i>
                 <input id="searchInput" type="text" placeholder="Search vehicles, trips, records...">
+                <div class="search-results" id="searchResults" role="listbox" aria-label="Search results"></div>
             </div>
 
             <div class="top-icons" id="topIcons">
@@ -135,7 +136,8 @@
 
                 <div class="dropdown-wrapper">
                     <div class="profile" id="profileBtn">
-                        <img id="profileImage" src="images/profile.png" alt="Profile">
+                        <img id="profileImage" alt="Profile" hidden>
+                        <i class='bx bx-user-circle profile-image-fallback' id="profileImageFallback" aria-hidden="true"></i>
                     </div>
 
                     <div class="profile-dropdown" id="profileDropdown">
@@ -266,7 +268,7 @@
                     <i class='bx bx-heart'></i>
                     <span>Wishlist</span>
                 </a>
-                <a class="tool-tile" href="achivement.html">
+                <a class="tool-tile" href="achievement.html">
                     <i class='bx bx-trophy'></i>
                     <span>Achievements</span>
                 </a>
