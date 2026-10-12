@@ -14,6 +14,12 @@ document.addEventListener("DOMContentLoaded", () => {
     const openTripModalBtn = document.getElementById('openTripModalBtn');
     const closeTripModal = document.getElementById('closeTripModal');
     const tripForm = document.getElementById('tripForm');
+    const tripMapUrl = document.getElementById('tripMapUrl');
+    const tripFrom = document.getElementById('tripFrom');
+    const tripTo = document.getElementById('tripTo');
+    const tripDistance = document.getElementById('tripDistance');
+    const routeStatus = document.getElementById('routeStatus');
+    let routeRequestId = 0;
 
     // --- 2. Sidebar Navigation Router ---
     function setupNavigation(elementId, targetUrl) {
@@ -124,6 +130,12 @@ document.addEventListener("DOMContentLoaded", () => {
 
    
     if (tripForm) {
+        if (tripMapUrl) {
+            tripMapUrl.addEventListener('change', updateRouteFromMapLink);
+            tripMapUrl.addEventListener('blur', updateRouteFromMapLink);
+            tripMapUrl.addEventListener('input', updateRouteFromMapLink);
+        }
+
         tripForm.addEventListener('submit', (event) => {
             event.preventDefault();
 
@@ -170,6 +182,108 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 
+    async function updateRouteFromMapLink() {
+        const mapUrl = tripMapUrl.value.trim();
+        const requestId = ++routeRequestId;
+        if (!mapUrl) return;
+
+        const route = extractRouteFromMapLink(mapUrl);
+        if (!route) {
+            tripDistance.value = '';
+            tripFrom.value = '';
+            tripTo.value = '';
+            return;
+        }
+
+        tripFrom.value = route.places[0];
+        tripTo.value = route.places[route.places.length - 1];
+        setRouteStatus('Finding the driving route and distance...', 'loading');
+
+        try {
+            const points = await Promise.all(route.places.map(geocodePlace));
+            if (requestId !== routeRequestId) return;
+
+            const routeResponse = await fetch(
+                `https://router.project-osrm.org/route/v1/driving/${points.map(point => `${point.lon},${point.lat}`).join(';')}?overview=false`
+            );
+            if (!routeResponse.ok) throw new Error('Route service unavailable');
+
+            const routeData = await routeResponse.json();
+            const meters = routeData.routes && routeData.routes[0] ? routeData.routes[0].distance : 0;
+            if (!meters) throw new Error('No drivable route found');
+
+            tripDistance.value = (meters / 1000).toFixed(1);
+            setRouteStatus(
+                `${route.places.length} stops: ${route.places.join(' → ')}. Total driving distance: ${(meters / 1000).toFixed(1)} km`,
+                'success'
+            );
+        } catch (error) {
+            if (requestId !== routeRequestId) return;
+            setRouteStatus('Could not calculate this route automatically. Enter the distance manually.', 'error');
+        }
+    }
+
+    function extractRouteFromMapLink(value) {
+        try {
+            const url = new URL(value);
+            const isGoogleMapsHost = /(^|\.)google\.[a-z.]+$/i.test(url.hostname)
+                && (url.hostname.startsWith('www.google.') || url.hostname.startsWith('maps.google.'));
+            const isDirectionsPath = /^\/maps\/dir(?:\/|$)/i.test(url.pathname);
+
+            if (!isGoogleMapsHost || !isDirectionsPath) {
+                setRouteStatus(
+                    'Only a normal Google Maps directions link is supported. Open Google Maps, choose Share → Copy link, and paste that link here.',
+                    'error'
+                );
+                return null;
+            }
+
+            const origin = url.searchParams.get('origin');
+            const destination = url.searchParams.get('destination');
+            const waypoints = url.searchParams.get('waypoints');
+            if (origin && destination) {
+                const places = [origin, ...(waypoints ? waypoints.split('|') : []), destination]
+                    .map(cleanPlace)
+                    .filter(Boolean);
+                return places.length >= 2 ? { places } : null;
+            }
+
+            const directionIndex = url.pathname.indexOf('/dir/');
+            if (directionIndex !== -1) {
+                const places = url.pathname.slice(directionIndex + 5)
+                    .split('/')
+                    .map(item => cleanPlace(decodeURIComponent(item)))
+                    .filter(item => item && !item.startsWith('@') && !item.startsWith('data='));
+                if (places.length >= 2) {
+                    return { places };
+                }
+            }
+        } catch (error) {
+            return null;
+        }
+        return null;
+    }
+
+    async function geocodePlace(place) {
+        const response = await fetch(
+            `https://nominatim.openstreetmap.org/search?format=jsonv2&limit=1&q=${encodeURIComponent(place)}`
+        );
+        if (!response.ok) throw new Error('Location lookup failed');
+        const results = await response.json();
+        if (!results.length) throw new Error(`Location not found: ${place}`);
+        return { lat: results[0].lat, lon: results[0].lon };
+    }
+
+    function cleanPlace(value) {
+        return value.replace(/\+/g, ' ').replace(/%2C/gi, ',').trim();
+    }
+
+    function setRouteStatus(message, state) {
+        if (!routeStatus) return;
+        routeStatus.textContent = message;
+        routeStatus.className = `route-helper ${state}`;
+    }
+
     function awardBadge(tripName) {
         const achievements = JSON.parse(localStorage.getItem('soulride_achievements')) || [];
         const badgeId = `trip_completed_${tripName.replace(/\s+/g, '_').toLowerCase()}`;
@@ -196,7 +310,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
     function escapeHtml(unsafeText) {
-        return unsafeText
+        return String(unsafeText ?? '')
             .replace(/&/g, "&amp;")
             .replace(/</g, "&lt;")
             .replace(/>/g, "&gt;")

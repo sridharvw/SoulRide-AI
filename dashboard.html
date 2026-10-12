@@ -107,6 +107,16 @@
 
     <main class="main-content" id="mainContent">
 
+        <section class="welcome-splash" id="welcomeSplash" aria-label="Welcome message" aria-live="polite">
+            <div class="welcome-splash-card">
+                <div class="welcome-splash-icon"><i class="bx bx-sun"></i></div>
+                <p class="welcome-splash-kicker">SoulRide AI</p>
+                <h2 id="splashGreeting">Welcome back</h2>
+                <p class="welcome-splash-quote" id="splashQuote"></p>
+                <span class="welcome-splash-line"></span>
+            </div>
+        </section>
+
         <header class="topbar" id="topbar">
 
             <button class="menu-toggle" id="menuToggle" aria-label="Toggle menu">
@@ -117,6 +127,10 @@
                 <i class='bx bx-search' id="searchIcon"></i>
                 <input id="searchInput" type="text" placeholder="Search vehicles, trips, records...">
                 <div class="search-results" id="searchResults" role="listbox" aria-label="Search results"></div>
+            </div>
+
+            <div class="ride-ticker" id="rideTicker" aria-live="polite" aria-label="Ride updates">
+                <span class="ride-ticker-text" id="rideTickerText">Every ride has a story.</span>
             </div>
 
             <div class="top-icons" id="topIcons">
@@ -174,7 +188,7 @@
                 <i class='bx bx-map-alt'></i>
                 <div class="stat-info">
                     <h3 id="dash-total-distance">0 km</h3>
-                    <p>Total Distance</p>
+                    <p>Distance Logged</p>
                 </div>
             </div>
             <div class="stat-card">
@@ -182,6 +196,13 @@
                 <div class="stat-info">
                     <h3 id="dash-fuel-spent">₹0</h3>
                     <p>Fuel Spent</p>
+                </div>
+            </div>
+            <div class="stat-card odometer-stat-card">
+                <i class='bx bx-tachometer'></i>
+                <div class="stat-info">
+                    <div class="odometer-display" id="dash-odometer" aria-label="Current odometer reading">------</div>
+                    <p>Current Odometer</p>
                 </div>
             </div>
             <div class="stat-card">

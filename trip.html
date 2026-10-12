@@ -99,13 +99,15 @@
                 </div>
 
                 <div class="form-group">
-                    <label>Distance (km)</label>
-                    <input type="number" id="tripDistance" min="0" step="0.1" placeholder="e.g. 120" required>
+                    <label for="tripDistance">Distance (km)</label>
+                    <input type="number" id="tripDistance" min="0" step="0.1" placeholder="Calculated from map link" required>
+                    <small class="route-helper" id="routeStatus" role="status">Use Google Maps → Share → Copy link. Short links are not supported.</small>
                 </div>
 
                 <div class="form-group">
-                    <label>Map Link (Google Maps / Offline Route Link)</label>
-                    <input type="url" id="tripMapUrl" placeholder="https://maps.google.com/..." required>
+                    <label for="tripMapUrl">Map Link (Google Maps)</label>
+                    <input type="url" id="tripMapUrl" placeholder="https://www.google.com/maps/dir/..." required>
+                    <small class="route-helper">Paste the normal Google Maps directions link with all places/stops.</small>
                 </div>
 
                 <button type="submit" class="btn primary-btn full-width">Save Trip</button>

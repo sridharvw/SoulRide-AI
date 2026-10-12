@@ -273,3 +273,15 @@
 .trip-actions button.delete-btn:hover {
     color: var(--accent-red); 
 }
+
+.route-helper {
+    display: block;
+    margin-top: 6px;
+    color: var(--text-muted);
+    font-size: 11px;
+    line-height: 1.5;
+}
+
+.route-helper.loading { color: #e6a23c; }
+.route-helper.success { color: #2ecc71; }
+.route-helper.error { color: var(--accent-red); }

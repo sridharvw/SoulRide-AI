@@ -36,6 +36,14 @@
                 <h1>Settings & Preferences</h1>
                 <p>Manage your account, customize the AI, and control your app experience.</p>
             </div>
+            <div class="settings-tools">
+                <label class="settings-search">
+                    <i class='bx bx-search'></i>
+                    <span class="sr-only">Search settings</span>
+                    <input type="search" id="settingsSearch" placeholder="Search settings..." autocomplete="off">
+                </label>
+                <span class="save-status" id="saveStatus" role="status" aria-live="polite">All changes saved</span>
+            </div>
         </header>
 
         <div class="settings-layout">
@@ -59,18 +67,18 @@
                 <section id="sec-account" class="settings-section active-sec">
                     <h2><i class='bx bx-user-circle'></i> Account Details</h2>
                     <div class="profile-preview">
-                        <div class="pic-placeholder">SR</div>
+                        <div class="pic-placeholder" id="profileInitials">SR</div>
                         <div>
                             <h3 id="displayUserName">Soul Rider</h3>
                             <p>Joined: Jun 2026</p>
                         </div>
                     </div>
-                    <div class="setting-row"><label>Full Name</label><input type="text" id="accName" value="Soul Rider"></div>
-                    <div class="setting-row"><label>Email</label><input type="email" id="accEmail" value="rider@soulride.ai"></div>
-                    <div class="setting-row"><label>Phone</label><input type="tel" id="accPhone" value="+91 9876543210"></div>
+                    <div class="setting-row"><label for="accName">Full Name</label><input type="text" id="accName" value="Soul Rider" required></div>
+                    <div class="setting-row"><label for="accEmail">Email</label><input type="email" id="accEmail" value="rider@soulride.ai" required></div>
+                    <div class="setting-row"><label for="accPhone">Phone</label><input type="tel" id="accPhone" value="+91 9876543210"></div>
                     <div class="action-row">
-                        <button class="btn secondary-btn">Change Password</button>
-                        <button class="btn danger-btn">Delete Account</button>
+                        <button class="btn secondary-btn" id="changePasswordBtn">Change Password</button>
+                        <button class="btn danger-btn" id="deleteAccountBtn">Delete Account</button>
                     </div>
                 </section>
 
@@ -125,8 +133,8 @@
                     <div class="setting-row toggle-row"><label>Two-Factor Auth (2FA)</label><label class="switch"><input type="checkbox" id="priv2fa"><span class="slider round"></span></label></div>
                     <div class="setting-row toggle-row"><label>Auto Logout (15 mins idle)</label><label class="switch"><input type="checkbox" id="privAutoLog"><span class="slider round"></span></label></div>
                     <div class="action-row column">
-                        <button class="btn secondary-btn full-btn">View Login History</button>
-                        <button class="btn secondary-btn full-btn">Manage Active Devices</button>
+                        <button class="btn secondary-btn full-btn" id="loginHistoryBtn">View Login History</button>
+                        <button class="btn secondary-btn full-btn" id="activeDevicesBtn">Manage Active Devices</button>
                     </div>
                 </section>
 
@@ -159,7 +167,7 @@
                         <p>Version: 1.0.0 (Beta)</p>
                         <p>Developed with ❤️ for riders.</p>
                         <div class="links" style="margin-top: 15px;">
-                            <a href="#">Release Notes</a> • <a href="#">Privacy Policy</a> • <a href="#">Terms of Service</a>
+                            <a href="readme.txt">Release Notes</a> • <a href="readme.txt">Privacy Policy</a> • <a href="readme.txt">Terms of Service</a>
                         </div>
                     </div>
                 </section>
@@ -167,9 +175,9 @@
                 <section id="sec-support" class="settings-section">
                     <h2><i class='bx bx-help-circle'></i> Support</h2>
                     <div class="action-row column">
-                        <button class="btn secondary-btn full-btn"><i class='bx bx-book-open'></i> Help Center & FAQs</button>
-                        <button class="btn secondary-btn full-btn"><i class='bx bx-bug'></i> Report a Bug</button>
-                        <button class="btn primary-btn full-btn"><i class='bx bx-message-square-detail'></i> Contact Support</button>
+                        <button class="btn secondary-btn full-btn" id="helpCenterBtn"><i class='bx bx-book-open'></i> Help Center & FAQs</button>
+                        <button class="btn secondary-btn full-btn" id="reportBugBtn"><i class='bx bx-bug'></i> Report a Bug</button>
+                        <button class="btn primary-btn full-btn" id="contactSupportBtn"><i class='bx bx-message-square-detail'></i> Contact Support</button>
                     </div>
                 </section>
 

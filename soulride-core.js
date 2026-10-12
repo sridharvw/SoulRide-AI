@@ -139,6 +139,7 @@
         else state.services[index] = record;
         state.notifications.unshift({
             id: `notification_${Date.now()}`,
+            vehicleId: record.vehicleId || getEquippedVehicleId(),
             type: 'maintenance',
             title: `Service Logged: ${record.category || 'Maintenance'}`,
             desc: `Amounting to ₹${record.amount}`,
@@ -290,7 +291,11 @@
             totalSpent: entries.reduce((sum, entry) => sum + (Number(entry.amount) || 0), 0),
             fuelSpent: entries.filter(entry => entry.category === 'Fuel').reduce((sum, entry) => sum + Number(entry.amount || 0), 0),
             maintenanceSpent: entries.filter(entry => entry.category === 'Service').reduce((sum, entry) => sum + Number(entry.amount || 0), 0),
-            latestOdometer: Math.max(0, ...getServices(vehicleId).map(service => Number(service.odometer) || 0), ...getFuelLogs(vehicleId).map(log => Number(log.odometer) || 0)),
+            latestOdometer: Math.max(
+                Number(getVehicles().find(vehicle => vehicle.id == vehicleId)?.odometer) || 0,
+                ...getServices(vehicleId).map(service => Number(service.odometer) || 0),
+                ...getFuelLogs(vehicleId).map(log => Number(log.odometer) || 0)
+            ),
             tripCount: getAppState().trips.filter(trip => matchesVehicle(trip, vehicleId)).length,
             totalDistance: getTotalDistance(vehicleId),
             vehicle: getVehicles().find(vehicle => vehicle.id == vehicleId) || null
@@ -299,7 +304,7 @@
 
     function getTotalDistance(vehicleId) {
         return getAppState().trips
-            .filter(trip => matchesVehicle(trip, vehicleId))
+            .filter(trip => matchesVehicle(trip, vehicleId) && trip.status === 'completed')
             .reduce((total, trip) => total + (Number(trip.distance ?? trip.distanceKm) || 0), 0);
     }
 

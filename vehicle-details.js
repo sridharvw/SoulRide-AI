@@ -31,6 +31,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const vehicleFuel = getFuelLogs(equipped.id);
         const entries = getFinancialEntries(equipped.id)
             .sort((first, second) => new Date(second.date) - new Date(first.date));
+        const nextService = getNextService(equipped.id);
         const latestOdometer = Math.max(
             Number(equipped.odometer) || 0,
             ...vehicleServices.map(item => Number(item.odometer) || 0),
@@ -49,6 +50,12 @@ document.addEventListener('DOMContentLoaded', () => {
         document.getElementById('totalSpentValue').textContent = `₹${totalSpent.toLocaleString()}`;
         document.getElementById('serviceCountValue').textContent = vehicleServices.length;
         document.getElementById('fuelCountValue').textContent = vehicleFuel.length;
+        document.getElementById('serviceStatusTitle').textContent =
+            nextService.status === 'overdue' ? 'Service attention needed' : 'Keep your vehicle in top shape';
+        document.getElementById('serviceStatusText').textContent =
+            nextService.status === 'not-scheduled'
+                ? 'Log your next service to receive a maintenance reminder.'
+                : nextService.label;
 
         const image = document.getElementById('vehicleImage');
         image.innerHTML = equipped.image
@@ -69,7 +76,8 @@ document.addEventListener('DOMContentLoaded', () => {
         const activity = document.getElementById('recentActivity');
         activity.innerHTML = entries.slice(0, 6).map(entry => `
             <div class="activity-row">
-                <div><strong>${escapeHtml(entry.title || entry.category)}</strong><p>${entry.date} | ${entry.category}</p></div>
+                <span class="activity-icon"><i class="bx ${entry.category === 'Fuel' ? 'bx-gas-pump' : 'bx-wrench'}"></i></span>
+                <div class="activity-copy"><strong>${escapeHtml(entry.title || entry.category)}</strong><p>${entry.date || 'Date not recorded'} <span>•</span> ${entry.category}</p></div>
                 <span class="amount">₹${(Number(entry.amount) || 0).toLocaleString()}</span>
             </div>
         `).join('') || '<p class="empty-state">No records for this vehicle yet.</p>';

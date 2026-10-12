@@ -485,6 +485,68 @@ input {
 .search-box input::placeholder {
     color: var(--text-muted);
 }
+/* the digit odometer update 12-10-26*/
+.ride-ticker {
+    display: flex;
+    align-items: center;
+    min-width: 0;
+    flex: 1;
+    height: 38px;
+    padding: 0;
+    overflow: hidden;
+    border: 1px solid rgba(255, 255, 255, 0.16);
+    border-radius: 7px;
+    background:
+        radial-gradient(circle, rgba(255, 255, 255, 0.13) 1px, transparent 1.4px) 0 0 / 6px 6px,
+        linear-gradient(90deg, #090b12, #171323 48%, #090b12);
+    box-shadow:
+        inset 0 0 0 1px rgba(0, 0, 0, 0.5),
+        inset 0 0 18px rgba(20, 10, 45, 0.9);
+}
+
+.ride-ticker-text {
+    display: inline-block;
+    flex: 0 0 auto;
+    padding-left: 100%;
+    color: #fff;
+    font-family: "Arial Black", "Segoe UI Black", "Courier New", monospace;
+    font-size: 16px;
+    font-weight: 900;
+    letter-spacing: 1.5px;
+    line-height: 1;
+    text-transform: uppercase;
+    white-space: nowrap;
+    background: linear-gradient(
+        90deg,
+        #ff3b7a 0%,
+        #ffca3a 22%,
+        #72f6a7 43%,
+        #55d6ff 64%,
+        #c77dff 84%,
+        #ff3b7a 100%
+    );
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    text-rendering: geometricPrecision;
+}
+
+.ticker-marquee {
+    animation: ticker-marquee 8.5s linear both;
+    will-change: transform;
+}
+
+@keyframes ticker-marquee {
+    from { transform: translateX(0); }
+    to { transform: translateX(-100%); }
+}
+
+body.light-mode .ride-ticker {
+    border-color: rgba(67, 72, 84, 0.28);
+    background:
+        radial-gradient(circle, rgba(255, 255, 255, 0.18) 1px, transparent 1.4px) 0 0 / 6px 6px,
+        linear-gradient(90deg, #151522, #242033 48%, #151522);
+}
 
 
 /* Top icons */
@@ -790,9 +852,135 @@ input {
 }
 
 
-
+/* welcome message updated 12-10-26 */
 .welcome {
     padding: 5px 2px;
+}
+
+.welcome-splash {
+    position: fixed;
+    inset: 0;
+    z-index: 2000;
+    display: grid;
+    place-items: center;
+    padding: 24px;
+    background: rgba(8, 9, 13, 0.78);
+    backdrop-filter: blur(9px);
+    animation: splash-fade-in 420ms ease both;
+}
+
+.welcome-splash-card {
+    position: relative;
+    width: min(460px, 100%);
+    padding: 42px 34px 38px;
+    overflow: hidden;
+    border: 1px solid rgba(230, 57, 70, 0.3);
+    border-radius: 22px;
+    background:
+        radial-gradient(circle at 90% 0%, rgba(230, 57, 70, 0.2), transparent 42%),
+        linear-gradient(145deg, var(--bg-panel), var(--bg-panel-2));
+    box-shadow: 0 24px 80px rgba(0, 0, 0, 0.45);
+    text-align: center;
+    animation: splash-card-in 650ms cubic-bezier(0.2, 0.8, 0.2, 1) both;
+}
+
+.welcome-splash-card::before {
+    position: absolute;
+    top: -70px;
+    left: 50%;
+    width: 190px;
+    height: 190px;
+    border: 1px solid rgba(230, 57, 70, 0.18);
+    border-radius: 50%;
+    content: "";
+    transform: translateX(-50%);
+}
+
+.welcome-splash-icon {
+    display: grid;
+    width: 56px;
+    height: 56px;
+    margin: 0 auto 18px;
+    place-items: center;
+    border-radius: 18px;
+    background: var(--accent-soft);
+    color: var(--accent-red);
+    font-size: 29px;
+    animation: splash-icon-pulse 2s ease-in-out 650ms infinite;
+}
+
+.welcome-splash-kicker {
+    position: relative;
+    color: var(--accent-red);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+}
+
+.welcome-splash-card h2 {
+    position: relative;
+    margin-top: 8px;
+    color: var(--text-primary);
+    font-size: clamp(28px, 5vw, 38px);
+    font-weight: 600;
+}
+
+.welcome-splash-quote {
+    position: relative;
+    max-width: 340px;
+    margin: 16px auto 0;
+    color: var(--text-secondary);
+    font-size: 15px;
+    line-height: 1.7;
+    animation: splash-quote-in 900ms 180ms ease both;
+}
+
+.welcome-splash-line {
+    display: block;
+    width: 52px;
+    height: 3px;
+    margin: 24px auto 0;
+    border-radius: 4px;
+    background: var(--accent-red);
+}
+
+.welcome-splash.is-closing {
+    animation: splash-fade-out 500ms ease both;
+}
+
+.welcome-splash.is-closing .welcome-splash-card {
+    animation: splash-card-out 500ms ease both;
+}
+
+@keyframes splash-fade-in {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes splash-fade-out {
+    from { opacity: 1; }
+    to { opacity: 0; }
+}
+
+@keyframes splash-card-in {
+    from { opacity: 0; transform: translateY(24px) scale(0.94); }
+    to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+@keyframes splash-card-out {
+    from { opacity: 1; transform: translateY(0) scale(1); }
+    to { opacity: 0; transform: translateY(-15px) scale(0.97); }
+}
+
+@keyframes splash-quote-in {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes splash-icon-pulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.08) rotate(4deg); }
 }
 
 .welcome h1 {
@@ -811,13 +999,38 @@ input {
     font-size: 14px;
 }
 
+body.light-mode .welcome-splash {
+    background: rgba(238, 241, 245, 0.78);
+}
+
+body.light-mode .welcome-splash-card {
+    box-shadow: 0 24px 70px rgba(37, 45, 58, 0.2);
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .welcome-splash,
+    .welcome-splash-card,
+    .welcome-splash-quote,
+    .welcome-splash-icon,
+    .ride-ticker-text {
+        animation: none;
+    }
+
+    @media screen and (max-width: 1100px) {
+        .ride-ticker-text {
+            font-size: 14px;
+            letter-spacing: 1.2px;
+        }
+    }
+}
+
 
 
 .stats-grid {
     display: grid;
 
     grid-template-columns:
-        repeat(4, minmax(0, 1fr));
+        repeat(5, minmax(0, 1fr));
 
     gap: 18px;
 }
@@ -890,6 +1103,34 @@ input {
     overflow: hidden;
 
     text-overflow: ellipsis;
+}
+
+.odometer-display {
+    display: flex;
+    align-items: center;
+    width: max-content;
+    max-width: 100%;
+    overflow: hidden;
+    border: 1px solid #343944;
+    border-radius: 3px;
+    background: #0d0f13;
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.45);
+}
+
+.odometer-display span {
+    min-width: 13px;
+    padding: 2px 1px;
+    color: #f1f3f5;
+    border-right: 1px solid #343944;
+    font-family: "Courier New", monospace;
+    font-size: 16px;
+    font-weight: 700;
+    line-height: 1;
+    text-align: center;
+}
+
+.odometer-display span:last-child {
+    border-right: 0;
 }
 
 .stat-info p {
@@ -1475,6 +1716,10 @@ body.font-large h1 {
         max-width: 280px;
     }
 
+    .ride-ticker {
+        max-width: 360px;
+    }
+
     .tools-grid {
         grid-template-columns:
             repeat(4, minmax(0, 1fr));
@@ -1570,6 +1815,10 @@ body.font-large h1 {
     .search-box input {
         min-width: 0;
         width: 100%;
+    }
+
+    .ride-ticker {
+        display: none;
     }
 
     .top-icons {

@@ -20,38 +20,70 @@
 
         <section class="vehicle-hero" id="vehicleHero">
             <div class="vehicle-hero-copy">
-                <p class="eyebrow">Equipped Vehicle</p>
+                <div class="hero-badge"><i class="bx bx-check-circle"></i> Equipped vehicle</div>
                 <h1 id="vehicleTitle">Loading vehicle...</h1>
                 <p id="vehicleMeta"></p>
+                <p class="hero-description">Everything you need to understand, maintain, and enjoy your ride.</p>
                 <label class="vehicle-switcher-label" for="vehicleSwitcher">Switch equipped vehicle</label>
                 <select id="vehicleSwitcher" aria-label="Switch equipped vehicle"></select>
+                <div class="hero-actions">
+                    <a class="primary-action" href="maintenance.html"><i class="bx bx-wrench"></i> Log maintenance</a>
+                    <a class="secondary-action" href="trip.html"><i class="bx bx-map"></i> Record a trip</a>
+                </div>
             </div>
             <div class="vehicle-hero-image" id="vehicleImage"><i class="bx bx-car"></i></div>
         </section>
 
         <section class="details-stats" aria-label="Vehicle summary">
-            <div class="details-stat"><span>Latest odometer</span><strong id="odometerValue">0 km</strong></div>
-            <div class="details-stat"><span>Total spent</span><strong id="totalSpentValue">₹0</strong></div>
-            <div class="details-stat"><span>Services</span><strong id="serviceCountValue">0</strong></div>
-            <div class="details-stat"><span>Fuel logs</span><strong id="fuelCountValue">0</strong></div>
+            <div class="details-stat">
+                <i class="bx bx-tachometer"></i>
+                <div><span>Latest odometer</span><strong id="odometerValue">0 km</strong></div>
+            </div>
+            <div class="details-stat">
+                <i class="bx bx-wallet"></i>
+                <div><span>Total spent</span><strong id="totalSpentValue">₹0</strong></div>
+            </div>
+            <div class="details-stat">
+                <i class="bx bx-wrench"></i>
+                <div><span>Services logged</span><strong id="serviceCountValue">0</strong></div>
+            </div>
+            <div class="details-stat">
+                <i class="bx bx-gas-pump"></i>
+                <div><span>Fuel logs</span><strong id="fuelCountValue">0</strong></div>
+            </div>
         </section>
 
         <section class="details-grid">
             <article class="details-panel">
-                <div class="panel-heading"><h2>Recent activity</h2><a href="reports.html">View reports</a></div>
+                <div class="panel-heading">
+                    <div><p class="panel-kicker">Your timeline</p><h2>Recent activity</h2></div>
+                    <a href="reports.html">View reports <i class="bx bx-right-arrow-alt"></i></a>
+                </div>
                 <div id="recentActivity"><p class="empty-state">No records for this vehicle yet.</p></div>
             </article>
             <article class="details-panel">
-                <div class="panel-heading"><h2>Vehicle information</h2><a href="add-vehicle.html">Edit vehicle</a></div>
+                <div class="panel-heading">
+                    <div><p class="panel-kicker">Know your ride</p><h2>Vehicle information</h2></div>
+                    <a href="add-vehicle.html">Edit <i class="bx bx-edit-alt"></i></a>
+                </div>
                 <dl class="vehicle-information" id="vehicleInformation"></dl>
             </article>
         </section>
 
-        <nav class="vehicle-actions" aria-label="Vehicle actions">
-            <a href="maintenance.html"><i class="bx bx-wrench"></i> Maintenance</a>
-            <a href="fueltracker.html"><i class="bx bx-gas-pump"></i> Fuel tracker</a>
-            <a href="expense.html"><i class="bx bx-wallet"></i> Expenses</a>
-            <a href="analytics.html"><i class="bx bx-line-chart"></i> Analytics</a>
+        <section class="care-banner">
+            <div class="care-banner-icon"><i class="bx bx-shield-quarter"></i></div>
+            <div>
+                <p class="panel-kicker">Stay ahead</p>
+                <h2 id="serviceStatusTitle">Keep your vehicle in top shape</h2>
+                <p id="serviceStatusText">Log a service to see your next maintenance reminder here.</p>
+            </div>
+            <a href="maintenance.html">Open maintenance <i class="bx bx-right-arrow-alt"></i></a>
+        </section>
+
+        <nav class="vehicle-actions" aria-label="More vehicle actions">
+            <a href="fueltracker.html"><i class="bx bx-gas-pump"></i><span>Fuel tracker</span><small>Track fill-ups</small></a>
+            <a href="expense.html"><i class="bx bx-wallet"></i><span>Expenses</span><small>Manage costs</small></a>
+            <a href="analytics.html"><i class="bx bx-line-chart"></i><span>Analytics</span><small>See insights</small></a>
         </nav>
     </main>
     <script src="vehicle-details.js"></script>
